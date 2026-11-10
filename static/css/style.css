@@ -1519,12 +1519,19 @@ html.menu-open body {
 
 .contact__subline {
   margin-top: 20px;
-  max-width: 60ch;
   font-family: var(--font-body);
   font-weight: 300;
-  font-size: 19px;
+  font-size: clamp(16px, 1.35vw, 19px);
   line-height: 1.6;
   color: var(--soft-white);
+  white-space: normal;
+}
+
+/* Desktop/laptop: always one line (fits .contact at every width from 1024px) */
+@media (min-width: 1024px) {
+  .contact__subline {
+    white-space: nowrap;
+  }
 }
 
 .contact__columns {
