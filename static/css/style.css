@@ -965,7 +965,7 @@ html.menu-open body {
   gap: 8px;
   flex: none;
   font-family: var(--font-mono);
-  font-size: 8.25px;
+  font-size: 12px;
   letter-spacing: .14em;
   color: var(--label);
 }

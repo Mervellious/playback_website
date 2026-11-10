@@ -2,7 +2,7 @@
 {# Placeholder page until the real page is designed (/synopsis, /epk, /contact). #}
 
 {% block title %}{{ page_title }} · Playback{% endblock %}
-{% block description %}{{ page_title }} — Playback, a 10-minute psychological thriller short film. Coming soon.{% endblock %}
+{% block description %}{{ page_title }} — Playback, {{ film.runtime_minutes | with_article }}-minute psychological thriller short film. Coming soon.{% endblock %}
 {% block robots %}<meta name="robots" content="noindex">{% endblock %}
 
 {% block content %}

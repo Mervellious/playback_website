@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}Contact · Playback — Short Film{% endblock %}
-{% block description %}Contact the team behind Playback, a {{ film.runtime_minutes }}-minute psychological thriller short film: festival, press and distribution enquiries, or just say hi.{% endblock %}
+{% block description %}Contact the team behind Playback, {{ film.runtime_minutes | with_article }}-minute psychological thriller short film: festival, press and distribution enquiries, or just say hi.{% endblock %}
 
 {% block structured_data %}
 <script type="application/ld+json">{{ jsonld | tojson }}</script>

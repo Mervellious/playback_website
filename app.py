@@ -85,15 +85,18 @@ FILM = {
     "title": "Playback",
     "genre": "Psychological / Supernatural Thriller",
     "genres": ["Psychological Thriller", "Supernatural Thriller"],
-    "runtime": "10 minutes",
-    "runtime_minutes": 10,
+    "runtime": "8 minutes",
+    "runtime_minutes": 8,
     "year": "2026",
     "country": "United Kingdom",
     "country_code": "GB",
     "language": "English",
     "writer": "Shae Rozar",
     "director": DIRECTOR_NAME,
-    "logline": "[LOGLINE: one sentence — who Daniel is, what he finds, what is at stake]",
+    "logline": (
+        "A filmmaker editing alone finds footage of himself in his own room — "
+        "recorded ten minutes in the future. Every clip he watches comes true."
+    ),
     "short_synopsis": (
         "Late at night, alone in his edit suite, exhausted filmmaker Daniel finds "
         "clips on his timeline that he never shot: footage of his own room, ten "
@@ -122,16 +125,6 @@ FILM = {
         ("Editor", "[Name]"),
         ("Sound Designer", "[Name]"),
     ],
-    "tech_specs": [
-        ("Runtime", "10 minutes"),
-        ("Aspect ratio", "[TBC]"),
-        ("Shooting format", "[TBC]"),
-        ("Sound", "[TBC]"),
-        ("Language", "[TBC]"),
-        ("Subtitles", "[TBC]"),
-        ("Country", "United Kingdom"),
-        ("Year", "2026"),
-    ],
     "press_email": "press@[domain]",
     "director_email": "director@[domain]",
     "stills": [
@@ -143,6 +136,18 @@ FILM = {
     ],
     "presskit_zip": "presskit",
 }
+
+# Technical specs read the shared facts from FILM, so they always match Key facts.
+FILM["tech_specs"] = [
+    ("Runtime", FILM["runtime"]),
+    ("Aspect ratio", "[TBC]"),
+    ("Shooting format", "[TBC]"),
+    ("Sound", "[TBC]"),
+    ("Language", FILM["language"]),
+    ("Subtitles", "[TBC]"),
+    ("Country", FILM["country"]),
+    ("Year", FILM["year"]),
+]
 
 # ---------------------------------------------------------------------------
 # Press kit downloads. Every download goes through /epk/download/<key>, so a
@@ -268,6 +273,14 @@ def get_journal_entry(slug):
     return None, None, None
 
 
+@app.template_filter("with_article")
+def with_article(number, capital=False):
+    """8 -> "an 8", 10 -> "a 10" (as in "an 8-minute film")."""
+    n = str(number)
+    article = "an" if n.startswith("8") or n in ("11", "18") else "a"
+    return f"{article.capitalize() if capital else article} {n}"
+
+
 @app.template_filter("display_date")
 def display_date(iso):
     """'2026-11-03' → '3 NOV 2026'."""
@@ -282,6 +295,7 @@ def site_context():
         "nav_items": NAV_ITEMS,
         "current_section": "journal" if current == "journal_entry" else current,
         "director_name": DIRECTOR_NAME,
+        "film": FILM,  # every template (incl. base.html meta) reads film facts from here
         "external_links": EXTERNAL_LINKS,
         "is_live_link": is_live_link,
         "link_for": link_for,

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
-{% block title %}{{ film.title }} — A {{ film.runtime_minutes }}-Minute Psychological Thriller Short Film{% endblock %}
-{% block description %}{{ film.title }} is a {{ film.runtime_minutes }}-minute psychological thriller short film. Daniel is editing alone, late at night — but someone is watching.{% endblock %}
+{% block title %}{{ film.title }} — {{ film.runtime_minutes | with_article(capital=True) }}-Minute Psychological Thriller Short Film{% endblock %}
+{% block description %}{{ film.title }} is {{ film.runtime_minutes | with_article }}-minute psychological thriller short film. Daniel is editing alone, late at night — but someone is watching.{% endblock %}
 {% block og_type %}video.movie{% endblock %}
 
 {% block structured_data %}
@@ -49,7 +49,7 @@
         <video class="hero-video" muted playsinline preload="metadata"
                poster="{{ url_for('static', filename='img/hero-poster-placeholder.png') }}"
                aria-hidden="true">
-          <source src="{{ url_for('static', filename='video/hero.mp4') }}" type="video/mp4">
+          <source src="{{ url_for('static', filename='video/hero.mp4', v=2) }}" type="video/mp4">
         </video>
 
         <div class="hero-scanlines" aria-hidden="true"></div>
@@ -97,7 +97,7 @@
       <!-- (A) Synopsis -->
       <div class="film__synopsis" data-reveal>
         <div class="film__col reveal">
-          <h2 class="film__title" id="film-title">A {{ film.runtime_minutes }}-minute psychological thriller set in a single edit suite.</h2>
+          <h2 class="film__title" id="film-title">{{ film.runtime_minutes | with_article(capital=True) }}-minute psychological thriller set in a single edit suite.</h2>
         </div>
 
         <div class="film__col film__col--text reveal">

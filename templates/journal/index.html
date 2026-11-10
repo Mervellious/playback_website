@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}Journal · Playback{% endblock %}
-{% block description %}The Playback production journal: notes from the set and the edit suite of a 10-minute psychological thriller short film.{% endblock %}
+{% block description %}The Playback production journal: notes from the set and the edit suite of {{ film.runtime_minutes | with_article }}-minute psychological thriller short film.{% endblock %}
 
 {% block content %}
 <div class="page">

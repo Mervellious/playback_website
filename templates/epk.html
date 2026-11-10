@@ -2,7 +2,7 @@
 {% from "_downloads.html" import download_link with context %}
 
 {% block title %}Press Kit · {{ film.title }} ({{ film.year }}) — Psychological Thriller Short Film{% endblock %}
-{% block description %}Press kit for {{ film.title }}, a {{ film.runtime_minutes }}-minute psychological thriller short film ({{ film.country }}, {{ film.year }}): key facts, synopsis, cast & crew, stills, posters and downloads.{% endblock %}
+{% block description %}Press kit for {{ film.title }}, {{ film.runtime_minutes | with_article }}-minute psychological thriller short film ({{ film.country }}, {{ film.year }}): key facts, synopsis, cast & crew, stills, posters and downloads.{% endblock %}
 
 {% block structured_data %}
 <script type="application/ld+json">{{ movie_jsonld | tojson }}</script>

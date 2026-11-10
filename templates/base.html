@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Playback{% endblock %}</title>
-  <meta name="description" content="{% block description %}Playback is a 10-minute psychological thriller short film.{% endblock %}">
+  <meta name="description" content="{% block description %}Playback is {{ film.runtime_minutes | with_article }}-minute psychological thriller short film.{% endblock %}">
   <link rel="canonical" href="{{ request.base_url }}">
   {% block robots %}{% endblock %}
 

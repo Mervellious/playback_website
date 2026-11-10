@@ -4,7 +4,7 @@
    Scroll section: one-time reveal when it enters the viewport. */
 
 // Length of the simulated clip used while static/video/hero.mp4 can't be played.
-const CLIP_FALLBACK_SECONDS = 16;
+const CLIP_FALLBACK_SECONDS = 10;
 
 document.documentElement.classList.add("js");
 
