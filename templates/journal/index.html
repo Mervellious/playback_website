@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Journal · Playback{% endblock %}
+{% block description %}The Playback production journal: notes from the set and the edit suite of a 10-minute psychological thriller short film.{% endblock %}
+
+{% block content %}
+<div class="page">
+
+  <!-- Intro -->
+  <section class="split" aria-labelledby="journal-title" data-reveal>
+    <div class="split__col reveal">
+      <h1 class="film__title" id="journal-title">Hi, I'm {{ director_name }}.</h1>
+      <p class="film__synopsis-text journal-intro__text">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante
+        venenatis dapibus, posuere velit aliquet. This is where I keep notes from making Playback —
+        the room, the light, and the footage that wasn't there.
+      </p>
+    </div>
+
+    <figure class="split__col media reveal">
+      <div class="media__frame glow-card" style="--ratio: 4 / 3">
+        {# <img src="" alt=""> #}
+        <span class="ph-label">[ ON-SET SELFIE ]</span>
+      </div>
+      <figcaption class="media__caption">[ Caption ]</figcaption>
+    </figure>
+  </section>
+
+  <!-- Entries -->
+  <section class="journal-list" aria-labelledby="entries-title">
+    <h2 class="visually-hidden" id="entries-title">All entries</h2>
+    <ul class="entry-grid">
+      {% for entry in entries %}
+      <li class="reveal-solo" data-reveal>
+        <a class="entry-card glow-card" href="{{ url_for('journal_entry', slug=entry.slug) }}">
+          <span class="entry-card__meta">
+            <span>{{ entry.day }}</span>
+            <time datetime="{{ entry.date }}">{{ entry.date | display_date }}</time>
+          </span>
+          <span class="entry-card__thumb">
+            {# <img src="" alt=""> #}
+            <span class="ph-label">{{ entry.cover_label }}</span>
+          </span>
+          <h3 class="entry-card__title">{{ entry.title }}</h3>
+          <p class="entry-card__excerpt">{{ entry.excerpt }}</p>
+          <svg class="entry-card__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M4 12h15M13 6l6 6-6 6"/>
+          </svg>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+</div>
+{% endblock %}

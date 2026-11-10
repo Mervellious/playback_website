@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{# Placeholder page until the real page is designed (/synopsis, /epk, /contact). #}
+
+{% block title %}{{ page_title }} · Playback{% endblock %}
+{% block description %}{{ page_title }} — Playback, a 10-minute psychological thriller short film. Coming soon.{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block content %}
+<div class="page placeholder">
+  {% if label %}<p class="section-label">{{ label }}</p>{% endif %}
+  <h1 class="film__title">{{ page_title }}</h1>
+  <p class="film__synopsis-text">{{ page_title }} coming soon.</p>
+  <a class="text-link" href="{{ url_for('index') }}"><span aria-hidden="true">←</span> BACK TO PLAYBACK</a>
+</div>
+{% endblock %}

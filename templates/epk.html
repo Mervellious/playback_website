@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% from "_downloads.html" import download_link with context %}
+
+{% block title %}Press Kit · {{ film.title }} ({{ film.year }}) — Psychological Thriller Short Film{% endblock %}
+{% block description %}Press kit for {{ film.title }}, a {{ film.runtime_minutes }}-minute psychological thriller short film ({{ film.country }}, {{ film.year }}): key facts, synopsis, cast & crew, stills, posters and downloads.{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">{{ movie_jsonld | tojson }}</script>
+{% endblock %}
+
+{% macro spec_list(rows) -%}
+<dl class="spec-list">
+  {% for term, value in rows %}
+  <div class="spec-list__row">
+    <dt>{{ term }}</dt>
+    <dd>{{ value }}</dd>
+  </div>
+  {% endfor %}
+</dl>
+{%- endmacro %}
+
+{% block content %}
+<div class="page epk">
+
+  <!-- a) Page header -->
+  <header class="epk-header" data-reveal>
+    <h1 class="entry__title reveal">Press Kit</h1>
+  </header>
+
+  <!-- b) Key facts -->
+  <section class="epk-section reveal-solo" aria-labelledby="facts-title" data-reveal>
+    <h2 class="section-label" id="facts-title">KEY FACTS</h2>
+    <div class="epk-section__body">
+      {{ spec_list([
+        ("TITLE", film.title),
+        ("GENRE", film.genre),
+        ("RUNTIME", film.runtime),
+        ("YEAR", film.year),
+        ("COUNTRY", film.country),
+        ("LANGUAGE", film.language),
+      ]) }}
+    </div>
+  </section>
+
+  <!-- c) Synopsis (never reveal the ending) -->
+  <section class="epk-section reveal-solo" aria-labelledby="synopsis-title" data-reveal>
+    <h2 class="section-label" id="synopsis-title">SYNOPSIS</h2>
+    <div class="epk-section__body prose">
+      <p class="logline">{{ film.logline }}</p>
+      <p>{{ film.short_synopsis }}</p>
+    </div>
+  </section>
+
+  <!-- d) Cast & Crew -->
+  <section class="epk-section reveal-solo" aria-labelledby="credits-title" data-reveal>
+    <h2 class="section-label" id="credits-title">CAST &amp; CREW</h2>
+    <div class="epk-section__body credits">
+      <div>
+        <h3 class="credits__title">Cast</h3>
+        {{ spec_list(film.cast) }}
+      </div>
+      <div>
+        <h3 class="credits__title">Crew</h3>
+        {{ spec_list(film.crew) }}
+      </div>
+    </div>
+  </section>
+
+  <!-- f) Stills gallery -->
+  <section class="epk-section reveal-solo" aria-labelledby="stills-title" data-reveal>
+    <h2 class="section-label" id="stills-title">STILLS</h2>
+    <div class="epk-section__body">
+      {% set first = get_download(film.stills[0].key) %}
+      <div class="gallery" data-gallery role="region" aria-label="Stills gallery — use the arrow keys to browse">
+        <div class="gallery__viewer">
+          <img class="gallery__image" data-gallery-image
+               src="{{ first.static_url }}" alt="{{ film.stills[0].alt }}" width="1166" height="1206">
+
+          <span class="corner corner--tl" aria-hidden="true"></span>
+          <span class="corner corner--tr" aria-hidden="true"></span>
+          <span class="corner corner--bl" aria-hidden="true"></span>
+          <span class="corner corner--br" aria-hidden="true"></span>
+
+          <button class="gallery__nav gallery__nav--prev glow-btn" type="button" data-gallery-prev aria-label="Previous still">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <button class="gallery__nav gallery__nav--next glow-btn" type="button" data-gallery-next aria-label="Next still">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+
+        <ul class="gallery__thumbs">
+          {% for still in film.stills %}
+          {% set dl = get_download(still.key) %}
+          <li>
+            <button class="gallery__thumb" type="button" data-gallery-thumb
+                    data-src="{{ dl.static_url }}" data-alt="{{ still.alt }}"
+                    data-download-url="{{ dl.url }}" data-download-name="{{ dl.filename }}" data-download-meta="{{ dl.meta }}"
+                    aria-label="Show still {{ '%02d' | format(loop.index) }}"{% if loop.first %} aria-current="true"{% endif %}>
+              <img src="{{ dl.static_url }}" alt="{{ still.alt }}" loading="lazy" width="1166" height="1206">
+            </button>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- g) Posters -->
+  <section class="epk-section reveal-solo" aria-labelledby="posters-title" data-reveal>
+    <h2 class="section-label" id="posters-title">POSTERS</h2>
+    <div class="epk-section__body posters">
+      {% for poster in film.posters %}
+      <figure class="media">
+        <div class="media__frame glow-card" style="--ratio: 2 / 3">
+          {# <img src="" alt="{{ poster.alt }}" loading="lazy"> #}
+          <span class="ph-label">{{ poster.label }}</span>
+        </div>
+      </figure>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- h) Technical specs -->
+  <section class="epk-section reveal-solo" aria-labelledby="specs-title" data-reveal>
+    <h2 class="section-label" id="specs-title">TECHNICAL SPECS</h2>
+    <div class="epk-section__body">
+      {{ spec_list(film.tech_specs) }}
+    </div>
+  </section>
+
+  <!-- i) Press contact -->
+  <section class="epk-section reveal-solo" aria-labelledby="contact-title" data-reveal>
+    <h2 class="section-label" id="contact-title">PRESS CONTACT</h2>
+    <div class="epk-section__body">
+      <a class="contact-email" href="mailto:{{ film.press_email }}">{{ film.press_email }}</a>
+      <p class="contact-note">Screeners available on request for festivals and press.</p>
+      <div class="epk-actions">
+        {{ download_link(film.presskit_zip, "DOWNLOAD FULL PRESS KIT (.ZIP)", style="primary", show_meta=false, size="small") }}
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

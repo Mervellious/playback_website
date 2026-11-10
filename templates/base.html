@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Playback{% endblock %}</title>
+  <meta name="description" content="{% block description %}Playback is a 10-minute psychological thriller short film.{% endblock %}">
+  <link rel="canonical" href="{{ request.base_url }}">
+  {% block robots %}{% endblock %}
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:title" content="{{ self.title() }}">
+  <meta property="og:description" content="{{ self.description() }}">
+  <meta property="og:image" content="{{ url_for('static', filename='img/hero-poster-placeholder.png', _external=True) }}">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ self.title() }}">
+  <meta name="twitter:description" content="{{ self.description() }}">
+  <meta name="twitter:image" content="{{ url_for('static', filename='img/hero-poster-placeholder.png', _external=True) }}">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  {% block structured_data %}{% endblock %}
+  <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+  {% block scripts %}{% endblock %}
+</head>
+<body{% if placeholder_links %} data-placeholder-links="{{ placeholder_links | join(', ') }}"{% endif %}>
+  {% block header %}
+  <!-- Site navigation (inner pages) -->
+  <div class="site-header">
+    {% include "_nav.html" %}
+  </div>
+  {% endblock %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <p class="site-footer__copy">© 2026 PLAYBACK · DESIGNED &amp; DEVELOPED BY STUDIO MU</p>
+      {% include "_social.html" %}
+    </div>
+  </footer>
+
+  <!-- Menu overlay -->
+  <div class="menu" id="site-menu" data-menu role="dialog" aria-modal="true" aria-label="Menu" hidden>
+    <div class="menu__bar">
+      <div class="topbar">
+        <button class="menu-btn glow-btn" type="button" aria-label="Close menu" data-menu-close>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
+            <line x1="6" y1="6" x2="18" y2="18"/>
+            <line x1="18" y1="6" x2="6" y2="18"/>
+          </svg>
+        </button>
+        <a class="logo" href="{{ url_for('index') }}">PLAYBACK</a>
+      </div>
+    </div>
+
+    <nav class="menu__nav" aria-label="Main">
+      <ul class="menu__list">
+        {% for index, label, endpoint in nav_items %}
+        <li class="menu__item">
+          <a class="menu__link" href="{{ url_for(endpoint) }}"
+             {%- if endpoint == request.endpoint %} aria-current="page"
+             {%- elif endpoint == current_section %} aria-current="true"{% endif %}>
+            <span class="menu__index"><span class="menu__num">{{ index }}</span> ·</span>
+            <span class="menu__label">{{ label }}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+.env.*
+static/video/hero_original.mp4
+# Videos stay out of git for now; the trimmed hero.mp4 will be added later
+static/video/*.mp4
+!static/video/.gitkeep
