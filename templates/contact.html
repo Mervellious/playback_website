@@ -26,7 +26,7 @@
   <div class="contact">
     <!-- Header -->
     <header class="contact__header">
-      <h1 class="contact__title">Have a question, a festival enquiry, or just want to get in touch? Drop us a message.</h1>
+      <h1 class="contact__title"><span class="contact__title-line">Have a question, a festival enquiry, or just want to get in touch?</span> <span class="contact__title-line">Drop us a message.</span></h1>
     </header>
 
     <div class="contact__columns">
@@ -35,9 +35,9 @@
       <div class="contact-card" data-contact-card>
 
         <div class="contact-success" role="status" data-contact-success{% if not sent %} hidden{% endif %}>
-          <p class="contact-success__timecode"><span class="rec-dot" aria-hidden="true"></span>00:00:03:12</p>
+          <p class="contact-success__timecode"><span class="rec-dot" aria-hidden="true"></span><span data-success-timecode>{{ recorded_timecode }}</span></p>
           <h2 class="contact-success__title">Message recorded.</h2>
-          <p class="contact-success__text">Thanks — we'll get back to you soon.</p>
+          <p class="contact-success__text">We'll get back to you soon.</p>
           <a class="contact-success__again" href="{{ url_for('contact') }}" data-contact-again>SEND ANOTHER MESSAGE</a>
         </div>
 

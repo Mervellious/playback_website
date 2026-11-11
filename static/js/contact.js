@@ -13,6 +13,7 @@
   const submitLabel = form.querySelector("[data-submit-label]");
   const formError = form.querySelector("[data-form-error]");
   const again = success.querySelector("[data-contact-again]");
+  const successTimecode = success.querySelector("[data-success-timecode]");
   const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
   // ---------- Rules ----------
@@ -106,6 +107,27 @@
     if (chipGroup && !form.hidden && !form.contains(event.target)) clearTopic();
   });
 
+  // ---------- Recording length: first interaction → SEND MESSAGE ----------
+  const FPS = 24;
+  let recordStart = null; // performance.now() at the first focus / input / chip press
+
+  const pad = (n) => String(n).padStart(2, "0");
+  function toTimecode(seconds) {
+    const totalFrames = Math.max(0, Math.floor(seconds * FPS));
+    const totalSeconds = Math.floor(totalFrames / FPS);
+    return [
+      Math.floor(totalSeconds / 3600) % 100,
+      Math.floor(totalSeconds / 60) % 60,
+      totalSeconds % 60,
+      totalFrames % FPS,
+    ].map(pad).join(":");
+  }
+
+  const startRecording = () => {
+    if (recordStart === null) recordStart = performance.now();
+  };
+  ["focusin", "input", "change", "pointerdown"].forEach((type) => form.addEventListener(type, startRecording));
+
   // ---------- States ----------
   function setSending(sending) {
     submit.disabled = sending;
@@ -117,7 +139,8 @@
     formError.hidden = !message;
   }
 
-  function showSuccess() {
+  function showSuccess(elapsedSeconds) {
+    if (successTimecode) successTimecode.textContent = toTimecode(elapsedSeconds);
     form.hidden = true;
     success.hidden = false;
     success.querySelector("h2").setAttribute("tabindex", "-1");
@@ -132,6 +155,7 @@
     success.hidden = true;
     form.hidden = false;
     focusable("topic").focus();
+    recordStart = null; // after the programmatic focus: the next message gets its own timecode
   });
 
   // ---------- Submit ----------
@@ -139,6 +163,7 @@
     event.preventDefault();
     showFormError("");
     if (!validateAll()) return;
+    const elapsed = recordStart === null ? 0 : (performance.now() - recordStart) / 1000;
 
     setSending(true);
     try {
@@ -151,7 +176,7 @@
       const result = await response.json().catch(() => ({}));
 
       if (response.ok && result.ok) {
-        showSuccess();
+        showSuccess(elapsed);
         return;
       }
       if (result.errors) {

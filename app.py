@@ -394,6 +394,17 @@ def validate_contact(form):
     return data, errors
 
 
+TIMECODE_FPS = 24
+
+
+def random_recording_timecode():
+    """No-JS success page: a plausible "recording length", 00:00:30:00 – 00:04:59:23.
+    (With JS, contact.js shows the real time the visitor spent on the form.)"""
+    frames = secrets.randbelow((5 * 60 - 30) * TIMECODE_FPS) + 30 * TIMECODE_FPS
+    seconds, ff = divmod(frames, TIMECODE_FPS)
+    return f"{seconds // 3600:02d}:{seconds // 60 % 60:02d}:{seconds % 60:02d}:{ff:02d}"
+
+
 def save_contact_message(data):
     # TODO: store in the database (topic, name, email, message, consent, created_at).
     record = {**data, "created_at": datetime.now(timezone.utc).isoformat()}
@@ -418,7 +429,8 @@ def contact():
     }
 
     def page(status=200, **context):
-        context = {"errors": {}, "values": {}, "sent": False, "form_error": None, **context}
+        context = {"errors": {}, "values": {}, "sent": False, "form_error": None,
+                   "recorded_timecode": random_recording_timecode(), **context}
         return render_template("contact.html", film=FILM, topics=CONTACT_TOPICS, jsonld=jsonld, **context), status
 
     if request.method == "GET":

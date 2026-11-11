@@ -1404,10 +1404,28 @@ html.menu-open body {
   font-family: var(--font-display);
   font-stretch: var(--stretch-logo);
   font-weight: 800;
-  font-size: clamp(32px, 3.4vw, 52px);
+  font-size: clamp(28px, 3.1vw, 44px);
   line-height: 1.05;
   text-wrap: balance;
   color: var(--white);
+}
+
+/* Two lines, one heading. Both lines share the h1's font and size. */
+.contact__title-line {
+  display: block;
+  white-space: normal;
+}
+
+/* Desktop/laptop: the question is always one line. Archivo 62%/800 measures
+   ~20.7 × font-size for line 1 (~912px at 44px), so it fits .contact from 1024px up. */
+@media (min-width: 1024px) {
+  .contact__title {
+    max-width: none;
+  }
+
+  .contact__title-line:first-child {
+    white-space: nowrap;
+  }
 }
 
 .contact__columns {
