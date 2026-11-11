@@ -13,6 +13,7 @@
   --indigo: #1C1CA0;
   --electric: #0A43FF;
   --electric-light: #8FB0FF;
+  --electric-text: #4D7BFF; /* lighter electric blue for text: ~5.5:1 on #030303 */
   --white: #F5F5F5;
   --soft-white: #D6D6D6;
   --camera-text: #AFC0E6;
@@ -801,23 +802,41 @@ button {
 
 .more__title,
 .more .arrow-link {
-  transition: text-shadow 250ms ease;
+  transition: color 250ms ease, text-shadow 250ms ease;
 }
 
 .js .reveal.more__title,
 .js .reveal.arrow-link {
-  transition: opacity 600ms ease-out, transform 600ms ease-out, text-shadow 250ms ease;
+  transition: opacity 600ms ease-out, transform 600ms ease-out, color 250ms ease, text-shadow 250ms ease;
 }
 
 .js .is-revealed .arrow-link {
-  transition-delay: 120ms, 120ms, 0s; /* reveal after the heading; hover stays instant */
+  transition-delay: 120ms, 120ms, 0s, 0s; /* reveal after the heading; hover stays instant */
 }
 
-.more__link:hover .more__title,
+/* Hover only on real pointers (no sticky blue after a tap); keyboard focus always.
+   The long arrow uses currentColor, so it turns blue with the text. */
+@media (hover: hover) {
+  .more__link:hover .more__title,
+  .more__link:hover .arrow-link {
+    color: var(--electric-text);
+    text-shadow: var(--glow-blue-text);
+  }
+
+  .more__link:hover .long-arrow {
+    filter: drop-shadow(0 0 6px rgba(var(--electric-rgb), .9));
+  }
+}
+
 .more__link:focus-visible .more__title,
-.more__link:hover .arrow-link,
 .more__link:focus-visible .arrow-link {
+  color: var(--electric-text);
   text-shadow: var(--glow-blue-text);
+}
+
+.more__link:focus-visible {
+  outline: 2px solid var(--electric-light);
+  outline-offset: 6px;
 }
 
 .more .arrow-link {
@@ -843,7 +862,6 @@ button {
   transition: filter 250ms ease;
 }
 
-.more__link:hover .long-arrow,
 .more__link:focus-visible .long-arrow {
   filter: drop-shadow(0 0 6px rgba(var(--electric-rgb), .9));
 }
