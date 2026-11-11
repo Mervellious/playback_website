@@ -199,8 +199,8 @@ JOURNAL_ENTRIES = [
             ),
         ],
         "images": [
-            {"label": "[ SET BUILD ]", "ratio": "4 / 5"},
-            {"label": "[ EDIT DESK ]", "ratio": "3 / 2"},
+            {"ratio": "4 / 5"},
+            {"ratio": "3 / 2"},
         ],
     },
     {
@@ -228,9 +228,9 @@ JOURNAL_ENTRIES = [
             ),
         ],
         "images": [
-            {"label": "[ LIGHTING TEST ]", "ratio": "16 / 9"},
-            {"label": "[ MONITOR GLOW ]", "ratio": "1 / 1"},
-            {"label": "[ PRACTICAL ]", "ratio": "1 / 1"},
+            {"ratio": "16 / 9"},
+            {"ratio": "1 / 1"},
+            {"ratio": "1 / 1"},
         ],
     },
     {
@@ -258,8 +258,8 @@ JOURNAL_ENTRIES = [
             ),
         ],
         "images": [
-            {"label": "[ MONITOR INSERT ]", "ratio": "21 / 9"},
-            {"label": "[ ON SET ]", "ratio": "4 / 5"},
+            {"ratio": "21 / 9"},
+            {"ratio": "4 / 5"},
         ],
     },
 ]
