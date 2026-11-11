@@ -792,58 +792,11 @@ button {
   color: var(--white);
 }
 
-/* Heading + EXPLORE THE JOURNAL are one link and glow together */
-.more__link {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  color: var(--white);
-}
-
-.more__title,
-.more .arrow-link {
-  transition: color 250ms ease, text-shadow 250ms ease;
-}
-
-.js .reveal.more__title,
-.js .reveal.arrow-link {
-  transition: opacity 600ms ease-out, transform 600ms ease-out, color 250ms ease, text-shadow 250ms ease;
-}
-
-.js .is-revealed .arrow-link {
-  transition-delay: 120ms, 120ms, 0s, 0s; /* reveal after the heading; hover stays instant */
-}
-
-/* Hover only on real pointers (no sticky blue after a tap); keyboard focus always.
-   The long arrow uses currentColor, so it turns blue with the text. */
-@media (hover: hover) {
-  .more__link:hover .more__title,
-  .more__link:hover .arrow-link {
-    color: var(--electric-text);
-    text-shadow: var(--glow-blue-text);
-  }
-
-  .more__link:hover .long-arrow {
-    filter: drop-shadow(0 0 6px rgba(var(--electric-rgb), .9));
-  }
-}
-
-.more__link:focus-visible .more__title,
-.more__link:focus-visible .arrow-link {
-  color: var(--electric-text);
-  text-shadow: var(--glow-blue-text);
-}
-
-.more__link:focus-visible {
-  outline: 2px solid var(--electric-light);
-  outline-offset: 6px;
-}
-
 .more .arrow-link {
   margin-top: 32px;
 }
 
-/* EXPLORE THE JOURNAL + long arrow */
+/* EXPLORE THE JOURNAL + long arrow: the only part that reacts (the heading stays white) */
 .arrow-link {
   min-height: 44px;
   display: inline-flex;
@@ -853,6 +806,15 @@ button {
   font-size: 13px;
   letter-spacing: .2em;
   color: var(--white);
+  transition: color 250ms ease, text-shadow 250ms ease;
+}
+
+.js .reveal.arrow-link {
+  transition: opacity 600ms ease-out, transform 600ms ease-out, color 250ms ease, text-shadow 250ms ease;
+}
+
+.js .is-revealed .arrow-link {
+  transition-delay: 120ms, 120ms, 0s, 0s; /* reveal after the heading; hover stays instant */
 }
 
 .long-arrow {
@@ -862,7 +824,27 @@ button {
   transition: filter 250ms ease;
 }
 
-.more__link:focus-visible .long-arrow {
+/* Hover only on real pointers (no sticky blue after a tap); keyboard focus always.
+   The long arrow uses currentColor, so it turns blue with the text. */
+@media (hover: hover) {
+  .arrow-link:hover {
+    color: var(--electric-text);
+    text-shadow: var(--glow-blue-text);
+  }
+
+  .arrow-link:hover .long-arrow {
+    filter: drop-shadow(0 0 6px rgba(var(--electric-rgb), .9));
+  }
+}
+
+.arrow-link:focus-visible {
+  color: var(--electric-text);
+  text-shadow: var(--glow-blue-text);
+  outline: 2px solid var(--electric-light);
+  outline-offset: 6px;
+}
+
+.arrow-link:focus-visible .long-arrow {
   filter: drop-shadow(0 0 6px rgba(var(--electric-rgb), .9));
 }
 
