@@ -4,7 +4,7 @@ import re
 import secrets
 from datetime import date, datetime, timezone
 
-from flask import Flask, abort, jsonify, render_template, request, send_from_directory, session, url_for
+from flask import Flask, abort, jsonify, redirect, render_template, request, send_from_directory, session, url_for
 
 app = Flask(__name__)
 
@@ -104,18 +104,6 @@ FILM = {
         "he tries to break the sequence, the deeper he falls into a time loop of his "
         "own making."
     ),
-    "long_synopsis": "[LONG SYNOPSIS: 150–250 words — do not reveal the ending]",
-    "director_bio": [
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante "
-        "venenatis dapibus, posuere velit aliquet. Cras mattis consectetur purus sit amet fermentum.",
-        "Donec ullamcorper nulla non metus auctor fringilla. Maecenas faucibus mollis interdum. "
-        "Nullam quis risus eget urna mollis ornare vel eu leo.",
-    ],
-    "director_statement": (
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id ligula porta felis "
-        "euismod semper. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada "
-        "magna mollis euismod."
-    ),
     "cast": [("Daniel", "[Actor name]")],
     "crew": [
         ("Director", DIRECTOR_NAME),
@@ -128,11 +116,12 @@ FILM = {
     "press_email": "press@[domain]",
     "director_email": "director@[domain]",
     "stills": [
-        {"key": f"still-{n:02d}", "alt": f"Still {n:02d} from Playback (placeholder): Daniel at his editing desk in the dark"}
+        {"src": f"presskit/stills/still-{n:02d}.jpg", "alt": f"Still {n:02d} from Playback (placeholder): Daniel at his editing desk in the dark"}
         for n in range(1, 7)
     ],
     "posters": [
-        {"key": "poster-portrait", "label": "[ POSTER — PORTRAIT ]", "alt": "Playback poster, portrait (placeholder)"},
+        {"label": "[ POSTER — PORTRAIT ]", "alt": "Playback poster, portrait (placeholder)"},
+        {"label": "[ POSTER — 02 ]", "alt": "Playback poster 02 (placeholder)"},
     ],
     "presskit_zip": "presskit",
 }
@@ -157,102 +146,66 @@ PRESSKIT_DIR = os.path.join(app.static_folder, "presskit")
 
 PRESSKIT_DOWNLOADS = {
     "presskit": {"path": "playback-presskit.zip", "type": "ZIP", "gated": True},
-    **{f"still-{n:02d}": {"path": f"stills/still-{n:02d}.jpg", "type": "JPG"} for n in range(1, 7)},
-    "poster-portrait": {"path": "posters/poster-portrait.jpg", "type": "JPG"},
-    "poster-landscape": {"path": "posters/poster-landscape.jpg", "type": "JPG"},
 }
 
 
-def human_size(num_bytes):
-    for unit in ("B", "KB", "MB", "GB"):
-        if num_bytes < 1024 or unit == "GB":
-            return f"{num_bytes:.0f} {unit}" if unit in ("B", "KB") else f"{num_bytes:.1f} {unit}"
-        num_bytes /= 1024
-
-
 def get_download(key):
-    """Download info for templates: url, static_url, filename, meta ('JPG · 1.6 MB')."""
+    """Download info for templates: url, filename, gated."""
     item = PRESSKIT_DOWNLOADS.get(key)
     if item is None:
         return None
-    full_path = os.path.join(PRESSKIT_DIR, item["path"])
-    size = human_size(os.path.getsize(full_path)) if os.path.exists(full_path) else None
     return {
-        "key": key,
         "url": url_for("presskit_download", key=key),
-        "static_url": url_for("static", filename=f"presskit/{item['path']}"),
         "filename": os.path.basename(item["path"]),
-        "meta": f"{item['type']} · {size}" if size else item["type"],
         "gated": item.get("gated", False),
     }
+
 
 # Menu overlay: (index, label, endpoint)
 NAV_ITEMS = [
     ("00", "Home", "index"),
-    ("01", "Synopsis", "synopsis"),
-    ("02", "Journal", "journal"),
-    ("03", "Press Kit", "epk"),
-    ("04", "Contact", "contact"),
+    ("01", "Journal", "journal"),
+    ("02", "Press Kit", "epk"),
+    ("03", "Contact", "contact"),
 ]
 
 # ---------------------------------------------------------------------------
 # Journal — placeholder data. Later this comes from the database; only
 # get_journal_entries() reads it, so that is the one place to swap.
 # ---------------------------------------------------------------------------
-LOREM = (
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat "
-    "a ante venenatis dapibus, posuere velit aliquet. Cras mattis consectetur purus "
-    "sit amet fermentum. Donec ullamcorper nulla non metus auctor fringilla, vitae "
-    "elementum leo cursus at."
-)
-LOREM_LONG = (
-    "Maecenas faucibus mollis interdum. Nullam quis risus eget urna mollis ornare vel "
-    "eu leo. Vestibulum id ligula porta felis euismod semper. Aenean lacinia bibendum "
-    "nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod, sed "
-    "posuere consectetur est at lobortis. Curabitur blandit tempus porttitor."
-)
-
-
-def _placeholder_body(quote):
-    return {
-        "quote": quote,
-        "intro": [LOREM, LOREM_LONG],
-        "column": [LOREM_LONG, LOREM, LOREM_LONG],
-        "column_image": "[ EDIT SUITE ]",
-        "full_1": LOREM_LONG + " " + LOREM,
-        "pair_images": ["[ PORTRAIT 01 ]", "[ PORTRAIT 02 ]"],
-        "pair_text": [LOREM, LOREM_LONG],
-        "full_2": LOREM + " " + LOREM_LONG,
-    }
-
-
 JOURNAL_ENTRIES = [
     {
-        "slug": "day-01-building-the-edit-suite",
-        "day": "DAY 01",
+        "id": "day-01",
+        "slug": "day-01-building-the-edit-suite",  # old /journal/<slug> URL, now redirects
+        "day": "Day 01",
         "date": "2026-11-03",
-        "title": "Day 01 — Building the edit suite",
-        "excerpt": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Turning an empty room into Daniel's edit suite.",
-        "cover_label": "[ SET BUILD ]",
-        "body": _placeholder_body("The room had to feel like it had been lived in for years — by someone who never sleeps."),
+        "excerpt": (
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante "
+            "venenatis dapibus, posuere velit aliquet. Cras mattis consectetur purus sit amet fermentum."
+        ),
+        "images": ["[ SET BUILD ]", "[ EDIT DESK ]", "[ DETAIL ]"],
     },
     {
+        "id": "day-02",
         "slug": "day-02-lighting-a-room-at-3am",
-        "day": "DAY 02",
+        "day": "Day 02",
         "date": "2026-11-04",
-        "title": "Day 02 — Lighting a room at 3 a.m.",
-        "excerpt": "Integer posuere erat a ante venenatis dapibus. Monitor glow, one practical, and a lot of black.",
-        "cover_label": "[ LIGHTING TEST ]",
-        "body": _placeholder_body("The only light in the room is the footage. Everything else has to disappear."),
+        "excerpt": (
+            "Donec ullamcorper nulla non metus auctor fringilla. Maecenas faucibus mollis interdum. "
+            "Nullam quis risus eget urna mollis ornare vel eu leo."
+        ),
+        "images": ["[ LIGHTING TEST ]", "[ MONITOR GLOW ]", "[ PRACTICAL ]"],
     },
     {
+        "id": "day-03",
         "slug": "day-03-the-footage-that-wasnt-there",
-        "day": "DAY 03",
+        "day": "Day 03",
         "date": "2026-11-05",
-        "title": "Day 03 — The footage that wasn't there",
-        "excerpt": "Cras mattis consectetur purus sit amet fermentum. Shooting the clips Daniel never shot.",
-        "cover_label": "[ MONITOR INSERT ]",
-        "body": _placeholder_body("We shot the future first, so the present had something to catch up with."),
+        "excerpt": (
+            "Vestibulum id ligula porta felis euismod semper. Aenean lacinia bibendum nulla sed "
+            "consectetur. Etiam porta sem malesuada magna mollis euismod."
+        ),
+        "images": ["[ MONITOR INSERT ]", "[ ON SET ]", "[ WRAP ]"],
     },
 ]
 
@@ -260,17 +213,6 @@ JOURNAL_ENTRIES = [
 def get_journal_entries():
     """All journal entries, oldest first. Swap this for a database query later."""
     return sorted(JOURNAL_ENTRIES, key=lambda entry: entry["date"])
-
-
-def get_journal_entry(slug):
-    """(entry, previous, next) for a slug, or (None, None, None)."""
-    entries = get_journal_entries()
-    for i, entry in enumerate(entries):
-        if entry["slug"] == slug:
-            prev_entry = entries[i - 1] if i > 0 else None
-            next_entry = entries[i + 1] if i + 1 < len(entries) else None
-            return entry, prev_entry, next_entry
-    return None, None, None
 
 
 @app.template_filter("with_article")
@@ -283,21 +225,17 @@ def with_article(number, capital=False):
 
 @app.template_filter("display_date")
 def display_date(iso):
-    """'2026-11-03' → '3 NOV 2026'."""
+    """'2026-11-03' → '3 Nov 2026'."""
     d = date.fromisoformat(iso)
-    return f"{d.day} {d.strftime('%b').upper()} {d.year}"
+    return f"{d.day} {d.strftime('%b')} {d.year}"
 
 
 @app.context_processor
 def site_context():
-    current = request.endpoint
     return {
         "nav_items": NAV_ITEMS,
-        "current_section": "journal" if current == "journal_entry" else current,
         "director_name": DIRECTOR_NAME,
         "film": FILM,  # every template (incl. base.html meta) reads film facts from here
-        "external_links": EXTERNAL_LINKS,
-        "is_live_link": is_live_link,
         "link_for": link_for,
         # Listed on <body> in development so main.js can log one warning.
         "placeholder_links": placeholder_link_keys() if show_placeholder_links() else [],
@@ -359,22 +297,6 @@ def movie_jsonld(trailer):
     return data
 
 
-def blog_posting_jsonld(entry):
-    url = url_for("journal_entry", slug=entry["slug"], _external=True)
-    return {
-        "@context": "https://schema.org",
-        "@type": "BlogPosting",
-        "headline": entry["title"],
-        "description": entry["excerpt"],
-        "datePublished": entry["date"],
-        "author": {"@type": "Person", "name": DIRECTOR_NAME},
-        "image": poster_url(),
-        "url": url,
-        "mainEntityOfPage": url,
-        "isPartOf": {"@type": "Movie", "name": "Playback", "url": url_for("index", _external=True)},
-    }
-
-
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
@@ -397,17 +319,12 @@ def journal():
 
 
 @app.route("/journal/<slug>")
-def journal_entry(slug):
-    entry, prev_entry, next_entry = get_journal_entry(slug)
-    if entry is None:
-        abort(404)
-    return render_template(
-        "journal/entry.html",
-        entry=entry,
-        prev_entry=prev_entry,
-        next_entry=next_entry,
-        jsonld=blog_posting_jsonld(entry),
-    )
+def journal_day_redirect(slug):
+    """Old single-entry URLs → that day's section on the one-page Journal."""
+    for entry in JOURNAL_ENTRIES:
+        if slug in (entry["slug"], entry["id"]):
+            return redirect(url_for("journal") + "#" + entry["id"], code=301)
+    abort(404)
 
 
 @app.route("/epk")
@@ -427,14 +344,6 @@ def presskit_download(key):
         abort(404)
     # Later: if item.get("gated"), show the request form (name, outlet, email) first.
     return send_from_directory(PRESSKIT_DIR, item["path"], as_attachment=True)
-
-
-# Placeholder pages until they are designed.
-@app.route("/synopsis")
-def synopsis():
-    return render_template("placeholder.html", page_title="Synopsis")
-
-
 
 
 # ---------------------------------------------------------------------------
@@ -536,7 +445,7 @@ def contact():
 
 @app.route("/privacy")
 def privacy():
-    return render_template("placeholder.html", page_title="Privacy", label="PRIVACY")
+    return render_template("privacy.html")
 
 
 if __name__ == "__main__":

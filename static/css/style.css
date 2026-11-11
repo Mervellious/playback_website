@@ -184,11 +184,23 @@ button {
   place-items: center;
   color: var(--white);
   cursor: pointer;
+  transition: filter 250ms ease;
 }
 
 .menu-btn svg {
   width: 55%;
   height: 55%;
+}
+
+/* No frame: just the white icon; blue glow on hover / keyboard focus */
+.menu-btn:hover,
+.menu-btn:focus-visible {
+  filter: drop-shadow(0 0 6px rgba(var(--electric-rgb), .9)) drop-shadow(0 0 18px rgba(var(--electric-rgb), .7));
+}
+
+.menu-btn:focus-visible {
+  outline: 2px solid var(--electric-light);
+  outline-offset: 2px;
 }
 
 .logo {
@@ -651,19 +663,6 @@ button {
   color: var(--white);
 }
 
-.text-link {
-  margin-top: 32px;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  border-bottom: 1px solid rgba(var(--white-rgb), .4);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: .14em;
-  color: var(--white);
-}
-
 .film .btn-film {
   margin-top: 32px;
 }
@@ -767,10 +766,6 @@ button {
   padding-bottom: 120px;
 }
 
-.placeholder .film__synopsis-text {
-  margin-top: 24px;
-}
-
 /* ==========================================================================
    Homepage — Curious to know more? → Journal
    ========================================================================== */
@@ -790,30 +785,49 @@ button {
   color: var(--white);
 }
 
+/* Heading + EXPLORE THE JOURNAL are one link and glow together */
+.more__link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--white);
+}
+
+.more__title,
+.more .arrow-link {
+  transition: text-shadow 250ms ease;
+}
+
+.js .reveal.more__title,
+.js .reveal.arrow-link {
+  transition: opacity 600ms ease-out, transform 600ms ease-out, text-shadow 250ms ease;
+}
+
+.js .is-revealed .arrow-link {
+  transition-delay: 120ms, 120ms, 0s; /* reveal after the heading; hover stays instant */
+}
+
+.more__link:hover .more__title,
+.more__link:focus-visible .more__title,
+.more__link:hover .arrow-link,
+.more__link:focus-visible .arrow-link {
+  text-shadow: var(--glow-blue-text);
+}
+
 .more .arrow-link {
   margin-top: 32px;
 }
 
-.js .reveal.arrow-link {
-  transition: opacity 600ms ease-out, transform 600ms ease-out, border-color 250ms ease, text-shadow 250ms ease;
-}
-
-.js .is-revealed .arrow-link {
-  transition-delay: 120ms, 120ms, 0s, 0s; /* reveal after the heading; hover stays instant */
-}
-
-/* Link with a long arrow (EXPLORE THE JOURNAL, GET IN TOUCH) */
+/* EXPLORE THE JOURNAL + long arrow */
 .arrow-link {
   min-height: 44px;
   display: inline-flex;
   align-items: center;
   gap: 24px;
-  border-bottom: 1px solid rgba(var(--white-rgb), .4);
   font-family: var(--font-mono);
   font-size: 13px;
   letter-spacing: .2em;
   color: var(--white);
-  transition: border-color 250ms ease, text-shadow 250ms ease, opacity 600ms ease-out, transform 600ms ease-out;
 }
 
 .long-arrow {
@@ -823,14 +837,8 @@ button {
   transition: filter 250ms ease;
 }
 
-.arrow-link:hover,
-.arrow-link:focus-visible {
-  border-color: var(--electric);
-  text-shadow: 0 0 18px rgba(var(--electric-rgb), .9);
-}
-
-.arrow-link:hover .long-arrow,
-.arrow-link:focus-visible .long-arrow {
+.more__link:hover .long-arrow,
+.more__link:focus-visible .long-arrow {
   filter: drop-shadow(0 0 6px rgba(var(--electric-rgb), .9));
 }
 
@@ -882,6 +890,26 @@ button {
   font-size: 11px;
   letter-spacing: .12em;
   color: var(--grey);
+}
+
+/* Privacy policy: same font, size and colour as the © line */
+.site-footer__link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  color: inherit;
+  transition: text-shadow 250ms ease;
+}
+
+.site-footer__link:hover,
+.site-footer__link:focus-visible {
+  text-shadow: var(--glow-blue-text);
+}
+
+.site-footer__link:focus-visible {
+  outline: 2px solid var(--electric-light);
+  outline-offset: 2px;
 }
 
 .site-footer__social {
@@ -1058,128 +1086,62 @@ html.menu-open body {
   margin-top: 24px;
 }
 
-.journal-list {
-  margin-top: 64px;
+/* Portrait selfie, not a landscape rectangle */
+.journal-selfie {
+  flex: 0 1 360px;
+  max-width: 360px;
 }
 
-.entry-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
-  list-style: none;
+/* One section per day */
+.journal-day {
+  margin-top: 80px;
+  padding-top: 48px;
+  border-top: var(--line);
 }
 
-.entry-card {
-  height: 100%;
+.journal-day__header {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  color: var(--white);
-  transition: border-color 250ms ease, box-shadow 250ms ease, transform 250ms ease;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 24px;
 }
 
-.entry-card:hover,
-.entry-card:focus-visible {
-  border-color: rgba(var(--electric-rgb), .8);
-  box-shadow: 0 0 80px -10px rgba(var(--electric-rgb), .8), inset 0 0 36px rgba(var(--electric-rgb), .22);
-  transform: translateY(-4px);
-}
-
-.entry-card__meta {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: .14em;
-  color: var(--grey);
-}
-
-.entry-card__thumb {
-  aspect-ratio: 16 / 10;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(var(--electric-rgb), .3);
-  border-radius: 10px;
-  background: var(--frame-bg);
-}
-
-.entry-card__title {
+.journal-day__title {
   font-family: var(--font-display);
   font-stretch: var(--stretch-logo);
   font-weight: 800;
-  font-size: 32px;
+  font-size: clamp(36px, 4vw, 56px);
   line-height: 1;
+  color: var(--white);
 }
 
-.entry-card__excerpt {
+.journal-day__date {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .14em;
+  color: var(--label);
+}
+
+.journal-day__text {
+  margin-top: 20px;
+  max-width: 72ch;
   font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--grey);
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--soft-white);
 }
 
-.entry-card__arrow {
-  width: 24px;
-  height: 24px;
-  margin-top: auto;
-  align-self: flex-end;
+.journal-day__images {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
 }
 
 /* ==========================================================================
-   Journal — entry
+   Shared text styles
    ========================================================================== */
-.back-link {
-  margin-top: 0;
-  font-size: 12px;
-}
-
-.entry__meta {
-  margin-top: 32px;
-}
-
-.entry__title {
-  margin-top: 16px;
-  max-width: 18ch;
-  font-family: var(--font-display);
-  font-stretch: var(--stretch-logo);
-  font-weight: 800;
-  font-size: clamp(48px, 6vw, 88px);
-  line-height: .95;
-  color: var(--white);
-}
-
-.entry__block {
-  margin-top: 80px;
-}
-
-.pull-quote {
-  position: relative;
-  padding-left: 32px;
-  border-left: 2px solid var(--electric);
-  font-family: var(--font-display);
-  font-stretch: var(--stretch-logo);
-  font-weight: 700;
-  font-size: clamp(28px, 3vw, 40px);
-  line-height: 1.1;
-  color: var(--white);
-}
-
-/* Blue glow on the accent line only */
-.pull-quote::before {
-  content: "";
-  position: absolute;
-  left: -2px;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  box-shadow: 0 0 14px 1px rgba(var(--electric-rgb), .9);
-  pointer-events: none;
-}
-
-.pull-quote + .prose {
-  margin-top: 40px;
-}
 
 .prose p {
   max-width: 72ch;
@@ -1194,61 +1156,9 @@ html.menu-open body {
   margin-top: 1.2em;
 }
 
-.media-pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  align-content: start;
-}
-
-.entry__closing {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px 32px;
-}
-
-.entry__closing-title {
-  font-family: var(--font-display);
-  font-stretch: var(--stretch-logo);
-  font-weight: 800;
-  font-size: 36px;
-  line-height: 1;
-  color: var(--white);
-}
-
-.entry__pager {
-  margin-top: 96px;
-  padding-top: 24px;
-  border-top: var(--line);
-  display: flex;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.pager-link {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: .14em;
-  color: var(--white);
-}
-
-.pager-link:hover,
-.pager-link:focus-visible {
-  text-shadow: 0 0 18px rgba(var(--electric-rgb), .9);
-}
-
 /* ==========================================================================
    Press Kit — /epk
    ========================================================================== */
-.epk-header .entry__title {
-  margin-top: 0;
-  max-width: none;
-}
 
 .epk-actions {
   margin-top: 40px;
@@ -1266,10 +1176,6 @@ html.menu-open body {
   border-top: var(--line);
 }
 
-.epk-header + .epk-section {
-  margin-top: 64px;
-}
-
 .epk-section__body {
   min-width: 0;
 }
@@ -1282,10 +1188,6 @@ html.menu-open body {
   gap: 8px 16px;
 }
 
-.download .text-link {
-  margin-top: 0;
-}
-
 .download .cta {
   margin-top: 0;
 }
@@ -1295,9 +1197,6 @@ html.menu-open body {
   height: 16px;
   flex: none;
 }
-
-
-
 
 /* Definition tables (key facts, cast & crew, tech specs) */
 .spec-list {
@@ -1350,10 +1249,6 @@ html.menu-open body {
   color: var(--white);
 }
 
-
-
-
-
 /* Stills gallery */
 .gallery__viewer {
   --u: 1px; /* corner marks in plain px here, not hero units */
@@ -1393,8 +1288,6 @@ html.menu-open body {
 
 .gallery__nav--prev { left: 16px; }
 .gallery__nav--next { right: 16px; }
-
-
 
 .gallery__thumbs {
   margin-top: 16px;
@@ -1437,10 +1330,9 @@ html.menu-open body {
 /* Posters */
 .posters {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 320px));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 320px));
   gap: 24px;
 }
-
 
 /* Press contact */
 .contact-email {
@@ -1512,26 +1404,10 @@ html.menu-open body {
   font-family: var(--font-display);
   font-stretch: var(--stretch-logo);
   font-weight: 800;
-  font-size: clamp(44px, 5.5vw, 80px);
-  line-height: .95;
+  font-size: clamp(32px, 3.4vw, 52px);
+  line-height: 1.05;
+  text-wrap: balance;
   color: var(--white);
-}
-
-.contact__subline {
-  margin-top: 20px;
-  font-family: var(--font-body);
-  font-weight: 300;
-  font-size: clamp(16px, 1.35vw, 19px);
-  line-height: 1.6;
-  color: var(--soft-white);
-  white-space: normal;
-}
-
-/* Desktop/laptop: always one line (fits .contact at every width from 1024px) */
-@media (min-width: 1024px) {
-  .contact__subline {
-    white-space: nowrap;
-  }
 }
 
 .contact__columns {
@@ -1684,14 +1560,6 @@ html.menu-open body {
   cursor: pointer;
 }
 
-.consent__link {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  border-bottom: 1px solid rgba(var(--white-rgb), .4);
-  color: var(--white);
-}
-
 .field-error,
 .form-error {
   margin-top: 8px;
@@ -1790,7 +1658,19 @@ html.menu-open body {
 
 .contact-success__again {
   margin-top: 16px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
   font-size: 12px;
+  letter-spacing: .14em;
+  color: var(--white);
+  transition: text-shadow 250ms ease;
+}
+
+.contact-success__again:hover,
+.contact-success__again:focus-visible {
+  text-shadow: var(--glow-blue-text);
 }
 
 /* Direct contacts */
@@ -1828,11 +1708,6 @@ html.menu-open body {
 .contact-direct__email:hover,
 .contact-direct__email:focus-visible {
   text-shadow: 0 0 24px rgba(var(--electric-rgb), .9);
-}
-
-.contact-direct__kit {
-  margin-top: 10px;
-  letter-spacing: .14em;
 }
 
 .contact-social {
@@ -1953,10 +1828,6 @@ html.menu-open body {
     padding-bottom: 64px;
   }
 
-  .entry__block {
-    margin-top: 56px;
-  }
-
   .site-footer__inner {
     flex-direction: column;
     align-items: flex-start;
@@ -1968,6 +1839,29 @@ html.menu-open body {
 
   .gallery__thumbs {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .posters {
+    gap: 16px;
+  }
+
+  .journal-selfie {
+    flex-basis: 100%;
+  }
+
+  .journal-day {
+    margin-top: 56px;
+    padding-top: 40px;
+  }
+
+  /* Two per row; an odd last image takes the full row */
+  .journal-day__images {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .journal-day__images > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 
   .contact-email {
@@ -2014,11 +1908,6 @@ html.menu-open body {
   .js .reveal,
   .js .reveal-solo {
     opacity: 1;
-    transform: none;
-  }
-
-  .entry-card:hover,
-  .entry-card:focus-visible {
     transform: none;
   }
 }

@@ -22,10 +22,7 @@
 {% block content %}
 <div class="page epk">
 
-  <!-- a) Page header -->
-  <header class="epk-header" data-reveal>
-    <h1 class="entry__title reveal">Press Kit</h1>
-  </header>
+  <h1 class="visually-hidden">Playback — Press Kit</h1>
 
   <!-- b) Key facts -->
   <section class="epk-section reveal-solo" aria-labelledby="facts-title" data-reveal>
@@ -70,11 +67,10 @@
   <section class="epk-section reveal-solo" aria-labelledby="stills-title" data-reveal>
     <h2 class="section-label" id="stills-title">STILLS</h2>
     <div class="epk-section__body">
-      {% set first = get_download(film.stills[0].key) %}
       <div class="gallery" data-gallery role="region" aria-label="Stills gallery — use the arrow keys to browse">
         <div class="gallery__viewer">
           <img class="gallery__image" data-gallery-image
-               src="{{ first.static_url }}" alt="{{ film.stills[0].alt }}" width="1166" height="1206">
+               src="{{ url_for('static', filename=film.stills[0].src) }}" alt="{{ film.stills[0].alt }}" width="1166" height="1206">
 
           <span class="corner corner--tl" aria-hidden="true"></span>
           <span class="corner corner--tr" aria-hidden="true"></span>
@@ -91,13 +87,12 @@
 
         <ul class="gallery__thumbs">
           {% for still in film.stills %}
-          {% set dl = get_download(still.key) %}
+          {% set still_url = url_for('static', filename=still.src) %}
           <li>
             <button class="gallery__thumb" type="button" data-gallery-thumb
-                    data-src="{{ dl.static_url }}" data-alt="{{ still.alt }}"
-                    data-download-url="{{ dl.url }}" data-download-name="{{ dl.filename }}" data-download-meta="{{ dl.meta }}"
+                    data-src="{{ still_url }}" data-alt="{{ still.alt }}"
                     aria-label="Show still {{ '%02d' | format(loop.index) }}"{% if loop.first %} aria-current="true"{% endif %}>
-              <img src="{{ dl.static_url }}" alt="{{ still.alt }}" loading="lazy" width="1166" height="1206">
+              <img src="{{ still_url }}" alt="{{ still.alt }}" loading="lazy" width="1166" height="1206">
             </button>
           </li>
           {% endfor %}
@@ -136,7 +131,7 @@
       <a class="contact-email" href="mailto:{{ film.press_email }}">{{ film.press_email }}</a>
       <p class="contact-note">Screeners available on request for festivals and press.</p>
       <div class="epk-actions">
-        {{ download_link(film.presskit_zip, "DOWNLOAD FULL PRESS KIT (.ZIP)", style="primary", show_meta=false, size="small") }}
+        {{ download_link(film.presskit_zip, "DOWNLOAD FULL PRESS KIT (.ZIP)", size="small") }}
       </div>
     </div>
   </section>

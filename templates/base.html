@@ -46,7 +46,7 @@
   <!-- Footer -->
   <footer class="site-footer">
     <div class="site-footer__inner">
-      <p class="site-footer__copy">© 2026 PLAYBACK · DESIGNED &amp; DEVELOPED BY STUDIO MU</p>
+      <p class="site-footer__copy">© 2026 PLAYBACK · DESIGNED &amp; DEVELOPED BY STUDIO MU<span aria-hidden="true"> · </span><a class="site-footer__link" href="{{ url_for('privacy') }}">Privacy policy</a></p>
       {% include "_social.html" %}
     </div>
   </footer>
@@ -55,7 +55,7 @@
   <div class="menu" id="site-menu" data-menu role="dialog" aria-modal="true" aria-label="Menu" hidden>
     <div class="menu__bar">
       <div class="topbar">
-        <button class="menu-btn glow-btn" type="button" aria-label="Close menu" data-menu-close>
+        <button class="menu-btn" type="button" aria-label="Close menu" data-menu-close>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
             <line x1="6" y1="6" x2="18" y2="18"/>
             <line x1="18" y1="6" x2="6" y2="18"/>
@@ -70,8 +70,7 @@
         {% for index, label, endpoint in nav_items %}
         <li class="menu__item">
           <a class="menu__link" href="{{ url_for(endpoint) }}"
-             {%- if endpoint == request.endpoint %} aria-current="page"
-             {%- elif endpoint == current_section %} aria-current="true"{% endif %}>
+             {%- if endpoint == request.endpoint %} aria-current="page"{% endif %}>
             <span class="menu__index"><span class="menu__num">{{ index }}</span> ·</span>
             <span class="menu__label">{{ label }}</span>
           </a>

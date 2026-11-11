@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy policy · Playback{% endblock %}
+{% block description %}How Playback handles the details you send through the contact form.{% endblock %}
+
+{% block content %}
+<div class="page privacy">
+  <h1 class="film__title">Privacy policy</h1>
+  <div class="prose privacy__body">
+    <p>When you send a message through the contact form, we collect your name, email address, the topic you choose and your message.</p>
+    <p>We use these details only to reply to you. We don't share them, sell them or use them for marketing.</p>
+    <p>We keep messages for as long as we need to reply and follow up, and no longer than 12 months.</p>
+    <p>This site doesn't use tracking or advertising cookies.</p>
+    <p>To see, correct or delete what we hold about you, email <a class="privacy__email" href="mailto:{{ film.press_email }}">{{ film.press_email }}</a>.</p>
+    <p class="privacy__updated">Last updated: November 2026</p>
+  </div>
+</div>
+{% endblock %}

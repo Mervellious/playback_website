@@ -81,6 +81,31 @@
     if (!target("topic").contains(event.relatedTarget)) check("topic");
   });
 
+  // ---------- Topic chips can be unselected ----------
+  // Still radio inputs (arrow keys keep working). Clicking the selected chip
+  // again, or clicking outside the form, clears the choice. Clicks on the other
+  // fields and on SEND MESSAGE keep it, or the form could never be sent.
+  // The topic stays required: an empty choice shows the error on submit.
+  const chipGroup = form.querySelector(".chips");
+  const topicRadios = [...form.querySelectorAll('input[name="topic"]')];
+  let checkedOnPress = null; // the radio that was already checked when the pointer went down
+
+  const clearTopic = () => topicRadios.forEach((radio) => { radio.checked = false; });
+
+  topicRadios.forEach((radio) => {
+    radio.closest("label").addEventListener("pointerdown", () => {
+      checkedOnPress = radio.checked ? radio : null;
+    });
+    radio.addEventListener("click", () => {
+      if (checkedOnPress === radio) radio.checked = false; // second click on the same chip
+      checkedOnPress = null;
+    });
+  });
+
+  document.addEventListener("pointerdown", (event) => {
+    if (chipGroup && !form.hidden && !form.contains(event.target)) clearTopic();
+  });
+
   // ---------- States ----------
   function setSending(sending) {
     submit.disabled = sending;

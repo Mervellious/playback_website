@@ -49,7 +49,7 @@
         <video class="hero-video" muted playsinline preload="metadata"
                poster="{{ url_for('static', filename='img/hero-poster-placeholder.png') }}"
                aria-hidden="true">
-          <source src="{{ url_for('static', filename='video/hero.mp4', v=2) }}" type="video/mp4">
+          <source src="{{ url_for('static', filename='video/hero.mp4', v=3) }}" type="video/mp4">
         </video>
 
         <div class="hero-scanlines" aria-hidden="true"></div>
@@ -152,12 +152,15 @@
 
   <!-- Curious to know more? → Journal -->
   <section class="more" aria-labelledby="more-title" data-reveal>
-    <h2 class="more__title reveal" id="more-title">Curious to know more?</h2>
-    <a class="arrow-link reveal" href="{{ url_for('journal') }}">
-      <span>EXPLORE THE JOURNAL</span>
-      <svg class="long-arrow" viewBox="0 0 64 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-        <path d="M1 8h61M55 1l7 7-7 7"/>
-      </svg>
+    <!-- One link: the heading and EXPLORE THE JOURNAL glow together -->
+    <a class="more__link" href="{{ url_for('journal') }}">
+      <h2 class="more__title reveal" id="more-title">Curious to know more?</h2>
+      <span class="arrow-link reveal">
+        <span>EXPLORE THE JOURNAL</span>
+        <svg class="long-arrow" viewBox="0 0 64 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M1 8h61M55 1l7 7-7 7"/>
+        </svg>
+      </span>
     </a>
   </section>
 {% endblock %}

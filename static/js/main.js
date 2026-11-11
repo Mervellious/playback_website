@@ -3,8 +3,11 @@
    .hero-frame; CSS does the rest.
    Scroll section: one-time reveal when it enters the viewport. */
 
+// The hero plays only the LAST HERO_CLIP_SECONDS of static/video/hero.mp4
+// (the file itself is not trimmed yet).
+const HERO_CLIP_SECONDS = 6;
 // Length of the simulated clip used while static/video/hero.mp4 can't be played.
-const CLIP_FALLBACK_SECONDS = 10;
+const CLIP_FALLBACK_SECONDS = 6;
 
 document.documentElement.classList.add("js");
 
@@ -62,7 +65,27 @@ document.documentElement.classList.add("js");
     video.addEventListener("error", useFallback);
     if (source) source.addEventListener("error", useFallback); // a missing file errors on <source>
 
-    const clipTime = () => (fallback ? simTime : video.currentTime || 0);
+    // ---------- Clip window: the last HERO_CLIP_SECONDS of the file ----------
+    let clipStart = 0; // set once the duration is known
+
+    function toClipStart() {
+      try {
+        video.currentTime = clipStart;
+      } catch {
+        /* metadata not loaded yet: loadedmetadata seeks */
+      }
+    }
+
+    function onMetadata() {
+      if (!Number.isFinite(video.duration)) return;
+      clipStart = Math.max(0, video.duration - HERO_CLIP_SECONDS);
+      if (video.currentTime < clipStart) toClipStart();
+    }
+
+    if (video.readyState >= HTMLMediaElement.HAVE_METADATA) onMetadata();
+    video.addEventListener("loadedmetadata", onMetadata);
+
+    const clipTime = () => (fallback ? simTime : Math.max(0, (video.currentTime || 0) - clipStart));
 
     // ---------- Timecode: HH:MM:SS:FF from the clip time ----------
     const pad = (n) => String(n).padStart(2, "0");
@@ -106,6 +129,7 @@ document.documentElement.classList.add("js");
 
       if (next === "live") {
         if (!fallback) {
+          if (video.currentTime < clipStart) toClipStart();
           const playing = video.play();
           if (playing) playing.catch(() => {});
         }
@@ -159,11 +183,7 @@ document.documentElement.classList.add("js");
     }
 
     replay.addEventListener("click", () => {
-      try {
-        video.currentTime = 0;
-      } catch {
-        /* metadata not loaded yet: already at the start */
-      }
+      toClipStart();
       simTime = 0;
       setState("stby");
       lastFrame = -1;
@@ -301,13 +321,9 @@ document.documentElement.classList.add("js");
     if (!gallery) return;
 
     const image = gallery.querySelector("[data-gallery-image]");
-    const count = gallery.querySelector("[data-gallery-count]");
-    const link = gallery.querySelector("[data-download-link]");
-    const meta = gallery.querySelector("[data-download-meta]");
     const thumbs = [...gallery.querySelectorAll("[data-gallery-thumb]")];
     if (!image || !thumbs.length) return;
 
-    const pad = (n) => String(n).padStart(2, "0");
     let current = 0;
 
     function show(index, { focusThumb = false } = {}) {
@@ -317,12 +333,6 @@ document.documentElement.classList.add("js");
 
       image.src = data.src;
       image.alt = data.alt;
-      if (count) count.textContent = `Still ${pad(current + 1)} / ${pad(thumbs.length)}`;
-      if (link) {
-        link.href = data.downloadUrl;
-        link.setAttribute("download", data.downloadName);
-      }
-      if (meta) meta.textContent = data.downloadMeta;
 
       thumbs.forEach((button, i) => {
         if (i === current) button.setAttribute("aria-current", "true");

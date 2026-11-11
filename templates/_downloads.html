@@ -9,16 +9,15 @@
 </svg>
 {%- endmacro %}
 
-{% macro download_link(key, label, style="link", show_meta=true, size="") -%}
+{% macro download_link(key, label, size="") -%}
 {% set dl = get_download(key) %}
 {% if dl %}
-<span class="download download--{{ style }}{% if size %} download--{{ size }}{% endif %}">
-  <a class="{{ 'cta' if style == 'primary' else 'text-link' }}" href="{{ dl.url }}" download="{{ dl.filename }}"
+<span class="download{% if size %} download--{{ size }}{% endif %}">
+  <a class="cta" href="{{ dl.url }}" download="{{ dl.filename }}"
      data-download-link{% if dl.gated %} data-gated{% endif %}>
     {{ download_icon() }}
     <span>{{ label }}</span>
   </a>
-  {% if show_meta %}<span class="file-meta" data-download-meta>{{ dl.meta }}</span>{% endif %}
 </span>
 {% endif %}
 {%- endmacro %}

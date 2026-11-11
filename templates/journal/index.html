@@ -4,7 +4,7 @@
 {% block description %}The Playback production journal: notes from the set and the edit suite of {{ film.runtime_minutes | with_article }}-minute psychological thriller short film.{% endblock %}
 
 {% block content %}
-<div class="page">
+<div class="page journal">
 
   <!-- Intro -->
   <section class="split" aria-labelledby="journal-title" data-reveal>
@@ -12,13 +12,13 @@
       <h1 class="film__title" id="journal-title">Hi, I'm {{ director_name }}.</h1>
       <p class="film__synopsis-text journal-intro__text">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante
-        venenatis dapibus, posuere velit aliquet. This is where I keep notes from making Playback —
-        the room, the light, and the footage that wasn't there.
+        venenatis dapibus, posuere velit aliquet. Cras mattis consectetur purus sit amet fermentum.
+        Donec ullamcorper nulla non metus auctor fringilla, vitae elementum leo cursus at.
       </p>
     </div>
 
-    <figure class="split__col media reveal">
-      <div class="media__frame glow-card" style="--ratio: 4 / 3">
+    <figure class="split__col media journal-selfie reveal">
+      <div class="media__frame glow-card" style="--ratio: 3 / 4">
         {# <img src="" alt=""> #}
         <span class="ph-label">[ ON-SET SELFIE ]</span>
       </div>
@@ -26,31 +26,24 @@
     </figure>
   </section>
 
-  <!-- Entries -->
-  <section class="journal-list" aria-labelledby="entries-title">
-    <h2 class="visually-hidden" id="entries-title">All entries</h2>
-    <ul class="entry-grid">
-      {% for entry in entries %}
-      <li class="reveal-solo" data-reveal>
-        <a class="entry-card glow-card" href="{{ url_for('journal_entry', slug=entry.slug) }}">
-          <span class="entry-card__meta">
-            <span>{{ entry.day }}</span>
-            <time datetime="{{ entry.date }}">{{ entry.date | display_date }}</time>
-          </span>
-          <span class="entry-card__thumb">
-            {# <img src="" alt=""> #}
-            <span class="ph-label">{{ entry.cover_label }}</span>
-          </span>
-          <h3 class="entry-card__title">{{ entry.title }}</h3>
-          <p class="entry-card__excerpt">{{ entry.excerpt }}</p>
-          <svg class="entry-card__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M4 12h15M13 6l6 6-6 6"/>
-          </svg>
-        </a>
-      </li>
+  <!-- Days (JOURNAL_ENTRIES in app.py; later from the database) -->
+  {% for entry in entries %}
+  <section class="journal-day" id="{{ entry.id }}" aria-labelledby="{{ entry.id }}-title" data-reveal>
+    <header class="journal-day__header reveal">
+      <h2 class="journal-day__title" id="{{ entry.id }}-title">{{ entry.day }}</h2>
+      <time class="journal-day__date" datetime="{{ entry.date }}">{{ entry.date | display_date }}</time>
+    </header>
+    <p class="journal-day__text reveal">{{ entry.excerpt }}</p>
+    <div class="journal-day__images reveal">
+      {% for label in entry.images %}
+      <div class="media__frame glow-card" style="--ratio: 3 / 2">
+        {# <img src="" alt=""> #}
+        <span class="ph-label">{{ label }}</span>
+      </div>
       {% endfor %}
-    </ul>
+    </div>
   </section>
+  {% endfor %}
 
 </div>
 {% endblock %}
