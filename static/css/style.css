@@ -1441,27 +1441,7 @@ html.menu-open body {
   object-fit: cover;
 }
 
-.gallery__nav {
-  position: absolute;
-  top: 50%;
-  width: 44px;
-  height: 44px;
-  margin-top: -22px;
-  display: grid;
-  place-items: center;
-  color: var(--white);
-  cursor: pointer;
-}
-
-.gallery__nav svg {
-  width: 20px;
-  height: 20px;
-}
-
-.gallery__nav--prev { left: 16px; }
-.gallery__nav--next { right: 16px; }
-
-/* Thumbnail carousel: arrow · one scrolling row · arrow */
+/* Thumbnail strip: previous · one scrolling row · next (the arrows change the still) */
 .gallery__strip {
   --thumbs-visible: 4;
   margin-top: 16px;

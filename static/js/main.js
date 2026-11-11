@@ -325,25 +325,16 @@ document.documentElement.classList.add("js");
     if (!image || !thumbs.length) return;
 
     let current = 0;
+    const last = thumbs.length - 1;
 
-    // ---------- Thumbnail carousel ----------
     const strip = gallery.querySelector("[data-gallery-strip]");
-    const stripPrev = gallery.querySelector("[data-strip-prev]");
-    const stripNext = gallery.querySelector("[data-strip-next]");
+    const prevButton = gallery.querySelector("[data-strip-prev]");
+    const nextButton = gallery.querySelector("[data-strip-next]");
     const scrollBehavior = reduceMotion ? "auto" : "smooth";
 
-    function updateStripArrows() {
-      if (!strip) return;
-      const max = strip.scrollWidth - strip.clientWidth;
-      stripPrev?.setAttribute("aria-disabled", String(strip.scrollLeft <= 1));
-      stripNext?.setAttribute("aria-disabled", String(strip.scrollLeft >= max - 1));
-    }
-
-    function scrollStrip(direction) {
-      strip.scrollBy({ left: direction * strip.clientWidth, behavior: scrollBehavior });
-    }
-
-    // Keep the active thumb visible by scrolling the strip only, never the page.
+    // Keep the active thumb visible by scrolling the strip only, never the page
+    // (same result as scrollIntoView({block: "nearest", inline: "nearest"}),
+    // which would also scroll the page when the strip is partly off-screen).
     function revealThumb(thumb) {
       if (!strip) return;
       const item = thumb.parentElement;
@@ -354,25 +345,28 @@ document.documentElement.classList.add("js");
       else if (end > strip.scrollLeft) strip.scrollTo({ left: end, behavior: scrollBehavior });
     }
 
-    if (strip) {
-      stripPrev?.addEventListener("click", () => {
-        if (stripPrev.getAttribute("aria-disabled") !== "true") scrollStrip(-1);
-      });
-      stripNext?.addEventListener("click", () => {
-        if (stripNext.getAttribute("aria-disabled") !== "true") scrollStrip(1);
-      });
-      strip.addEventListener("scroll", updateStripArrows, { passive: true });
-      window.addEventListener("resize", updateStripArrows);
-      updateStripArrows();
+    // Load the neighbouring stills ahead of time, so a change doesn't flicker.
+    const preload = (i) => {
+      if (i >= 0 && i <= last) new Image().src = thumbs[i].dataset.src;
+    };
+
+    function updateArrows() {
+      prevButton?.setAttribute("aria-disabled", String(current === 0));
+      nextButton?.setAttribute("aria-disabled", String(current === last));
     }
 
+    // The one place the selection changes: big image, active thumb, strip and arrows stay in sync.
     function show(index, { focusThumb = false } = {}) {
-      current = (index + thumbs.length) % thumbs.length;
+      const next = Math.min(Math.max(index, 0), last); // no wrapping around
+      const changed = next !== current;
+      current = next;
       const thumb = thumbs[current];
-      const data = thumb.dataset;
 
-      image.src = data.src;
-      image.alt = data.alt;
+      image.src = thumb.dataset.src;
+      image.alt = thumb.dataset.alt;
+      if (changed && !reduceMotion && image.animate) {
+        image.animate([{ opacity: 0.35 }, { opacity: 1 }], { duration: 200, easing: "ease-out" });
+      }
 
       thumbs.forEach((button, i) => {
         if (i === current) button.setAttribute("aria-current", "true");
@@ -380,11 +374,18 @@ document.documentElement.classList.add("js");
       });
       revealThumb(thumb);
       if (focusThumb) thumb.focus({ preventScroll: true });
+      updateArrows();
+      preload(current - 1);
+      preload(current + 1);
     }
 
     thumbs.forEach((button, i) => button.addEventListener("click", () => show(i)));
-    gallery.querySelector("[data-gallery-prev]")?.addEventListener("click", () => show(current - 1));
-    gallery.querySelector("[data-gallery-next]")?.addEventListener("click", () => show(current + 1));
+    prevButton?.addEventListener("click", () => {
+      if (prevButton.getAttribute("aria-disabled") !== "true") show(current - 1);
+    });
+    nextButton?.addEventListener("click", () => {
+      if (nextButton.getAttribute("aria-disabled") !== "true") show(current + 1);
+    });
 
     // Arrow keys while focus is anywhere inside the gallery.
     gallery.addEventListener("keydown", (event) => {
@@ -393,6 +394,9 @@ document.documentElement.classList.add("js");
       const onThumb = thumbs.includes(document.activeElement);
       show(current + (event.key === "ArrowRight" ? 1 : -1), { focusThumb: onThumb });
     });
+
+    updateArrows();
+    preload(1);
   }
 
   // Development only: the server lists unset links on <body> (SHOW_PLACEHOLDER_LINKS).
