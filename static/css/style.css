@@ -48,6 +48,9 @@
   --glow-btn-radius: 10px;
   /* Text version of the hero frame glow (.hero-frame box-shadow) */
   --glow-blue-text: 0 0 18px rgba(var(--electric-rgb), .9), 0 0 60px rgba(var(--electric-rgb), .75);
+  /* Shared text hover (EXPLORE THE JOURNAL + menu page names): change both here */
+  --hover-text-color: var(--electric-text);
+  --hover-text-shadow: var(--glow-blue-text);
   --tag-shadow: 0 0 16px -2px rgba(var(--electric-rgb), .8);
   --corner-glow: drop-shadow(0 0 6px rgba(var(--electric-rgb), .9));
   --red-glow: 0 0 22px rgba(var(--rec-red-rgb), .7);
@@ -828,8 +831,8 @@ button {
    The long arrow uses currentColor, so it turns blue with the text. */
 @media (hover: hover) {
   .arrow-link:hover {
-    color: var(--electric-text);
-    text-shadow: var(--glow-blue-text);
+    color: var(--hover-text-color);
+    text-shadow: var(--hover-text-shadow);
   }
 
   .arrow-link:hover .long-arrow {
@@ -838,8 +841,8 @@ button {
 }
 
 .arrow-link:focus-visible {
-  color: var(--electric-text);
-  text-shadow: var(--glow-blue-text);
+  color: var(--hover-text-color);
+  text-shadow: var(--hover-text-shadow);
   outline: 2px solid var(--electric-light);
   outline-offset: 6px;
 }
@@ -990,7 +993,6 @@ html.menu-open body {
   min-height: 44px; /* touch target */
   padding: 10.5px 0;
   color: var(--white);
-  transition: text-shadow 250ms ease;
 }
 
 .menu__index {
@@ -1021,12 +1023,21 @@ html.menu-open body {
   font-weight: 800;
   font-size: clamp(36px, 4.5vw, 64px);
   line-height: 1;
+  transition: color 250ms ease, text-shadow 250ms ease;
 }
 
 /* Hover / keyboard focus: the hero frame's blue glow on the whole row */
-.menu__link:hover,
-.menu__link:focus-visible {
-  text-shadow: var(--glow-blue-text);
+/* Page names: same hover as EXPLORE THE JOURNAL (real pointers only; focus always) */
+@media (hover: hover) {
+  .menu__link:hover .menu__label {
+    color: var(--hover-text-color);
+    text-shadow: var(--hover-text-shadow);
+  }
+}
+
+.menu__link:focus-visible .menu__label {
+  color: var(--hover-text-color);
+  text-shadow: var(--hover-text-shadow);
 }
 
 .menu__link:focus-visible {
