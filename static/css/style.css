@@ -1178,7 +1178,7 @@ html.menu-open body {
   gap: 16px;
 }
 
-/* Phones: Day 01 small frame below the text, right; Day 03 small frame 60%, left */
+/* Phones: Day 01 small frame below the text, right */
 .journal-day--left .journal-day__frame--small {
   width: 60%;
   align-self: flex-end;
