@@ -26,22 +26,54 @@
     </figure>
   </section>
 
-  <!-- Days (JOURNAL_ENTRIES in app.py; later from the database) -->
+  <!-- Days (JOURNAL_ENTRIES in app.py; later from the database).
+       Each day has its own layout: left | right | wide. -->
+  {% macro frame(image, modifier) -%}
+  <div class="media__frame glow-card journal-day__frame journal-day__frame--{{ modifier }} reveal" style="--ratio: {{ image.ratio }}">
+    {# <img src="" alt=""> #}
+    <span class="ph-label">{{ image.label }}</span>
+  </div>
+  {%- endmacro %}
+
+  {% macro day_header(entry) -%}
+  <header class="journal-day__header">
+    <h2 class="journal-day__title" id="{{ entry.id }}-title">{{ entry.day }}</h2>
+    <time class="journal-day__date" datetime="{{ entry.date }}">{{ entry.date | display_date }}</time>
+  </header>
+  {%- endmacro %}
+
   {% for entry in entries %}
-  <section class="journal-day" id="{{ entry.id }}" aria-labelledby="{{ entry.id }}-title" data-reveal>
-    <header class="journal-day__header reveal">
-      <h2 class="journal-day__title" id="{{ entry.id }}-title">{{ entry.day }}</h2>
-      <time class="journal-day__date" datetime="{{ entry.date }}">{{ entry.date | display_date }}</time>
-    </header>
-    <p class="journal-day__text reveal">{{ entry.excerpt }}</p>
-    <div class="journal-day__images reveal">
-      {% for label in entry.images %}
-      <div class="media__frame glow-card" style="--ratio: 3 / 2">
-        {# <img src="" alt=""> #}
-        <span class="ph-label">{{ label }}</span>
-      </div>
-      {% endfor %}
+  {% set images = entry.images %}
+  <section class="journal-day journal-day--{{ entry.layout }}" id="{{ entry.id }}" aria-labelledby="{{ entry.id }}-title" data-reveal>
+    {% if entry.layout == "left" %}
+    {{ frame(images[0], "large") }}
+    <div class="journal-day__copy reveal">
+      {{ day_header(entry) }}
+      {% for p in entry.body %}<p>{{ p }}</p>{% endfor %}
     </div>
+    {% for image in images[1:] %}{{ frame(image, "small") }}{% endfor %}
+
+    {% elif entry.layout == "right" %}
+    <div class="journal-day__copy reveal">
+      {{ day_header(entry) }}
+      {% for p in entry.body %}<p>{{ p }}</p>{% endfor %}
+    </div>
+    {{ frame(images[0], "wide") }}
+    <div class="journal-day__pair">
+      {% for image in images[1:] %}{{ frame(image, "square") }}{% endfor %}
+    </div>
+
+    {% else %}
+    {{ frame(images[0], "hero") }}
+    <div class="journal-day__copy reveal">
+      {{ day_header(entry) }}
+      <p>{{ entry.body[0] }}</p>
+    </div>
+    <div class="journal-day__copy journal-day__copy--aside reveal">
+      {% for p in entry.body[1:] %}<p>{{ p }}</p>{% endfor %}
+    </div>
+    {% for image in images[1:] %}{{ frame(image, "small") }}{% endfor %}
+    {% endif %}
   </section>
   {% endfor %}
 

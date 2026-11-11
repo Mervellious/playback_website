@@ -179,33 +179,88 @@ JOURNAL_ENTRIES = [
         "slug": "day-01-building-the-edit-suite",  # old /journal/<slug> URL, now redirects
         "day": "Day 01",
         "date": "2026-11-03",
-        "excerpt": (
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante "
-            "venenatis dapibus, posuere velit aliquet. Cras mattis consectetur purus sit amet fermentum."
-        ),
-        "images": ["[ SET BUILD ]", "[ EDIT DESK ]", "[ DETAIL ]"],
+        "layout": "left",  # left | right | wide
+        "body": [
+            (
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante "
+                "venenatis dapibus, posuere velit aliquet. Cras mattis consectetur purus sit amet "
+                "fermentum. Donec ullamcorper nulla non metus auctor fringilla, vitae elementum leo "
+                "cursus at. Maecenas faucibus mollis interdum, sed porttitor lectus nibh. Curabitur "
+                "aliquet quam id dui posuere blandit. Vivamus suscipit tortor eget felis porttitor "
+                "volutpat, nulla quis lorem ut libero malesuada feugiat."
+            ),
+            (
+                "Nullam quis risus eget urna mollis ornare vel eu leo. Vestibulum id ligula porta felis "
+                "euismod semper. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada "
+                "magna mollis euismod, sed posuere consectetur est at lobortis. Praesent sapien massa, "
+                "convallis a pellentesque nec, egestas non nisi. Proin eget tortor risus. Pellentesque in "
+                "ipsum id orci porta dapibus, donec rutrum congue leo eget malesuada. Aenean lacinia "
+                "bibendum nulla sed consectetur."
+            ),
+        ],
+        "images": [
+            {"label": "[ SET BUILD ]", "ratio": "4 / 5"},
+            {"label": "[ EDIT DESK ]", "ratio": "3 / 2"},
+        ],
     },
     {
         "id": "day-02",
         "slug": "day-02-lighting-a-room-at-3am",
         "day": "Day 02",
         "date": "2026-11-04",
-        "excerpt": (
-            "Donec ullamcorper nulla non metus auctor fringilla. Maecenas faucibus mollis interdum. "
-            "Nullam quis risus eget urna mollis ornare vel eu leo."
-        ),
-        "images": ["[ LIGHTING TEST ]", "[ MONITOR GLOW ]", "[ PRACTICAL ]"],
+        "layout": "right",
+        "body": [
+            (
+                "Donec sollicitudin molestie malesuada. Vivamus magna justo, lacinia eget consectetur "
+                "sed, convallis at tellus. Curabitur non nulla sit amet nisl tempus convallis quis ac "
+                "lectus. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Quisque velit nisi, "
+                "pretium ut lacinia in, elementum id enim. Nulla porttitor accumsan tincidunt. Sed "
+                "porttitor lectus nibh, cras ultricies ligula sed magna dictum porta, vestibulum ac diam "
+                "sit amet quam."
+            ),
+            (
+                "Vivamus suscipit tortor eget felis porttitor volutpat. Praesent sapien massa, convallis "
+                "a pellentesque nec, egestas non nisi. Lorem ipsum dolor sit amet, consectetur adipiscing "
+                "elit. Nulla quis lorem ut libero malesuada feugiat. Curabitur arcu erat, accumsan id "
+                "imperdiet et, porttitor at sem. Donec rutrum congue leo eget malesuada. Mauris blandit "
+                "aliquet elit, eget tincidunt nibh pulvinar a, quisque velit nisi pretium ut lacinia. "
+                "Aenean lacinia bibendum nulla sed consectetur."
+            ),
+        ],
+        "images": [
+            {"label": "[ LIGHTING TEST ]", "ratio": "16 / 9"},
+            {"label": "[ MONITOR GLOW ]", "ratio": "1 / 1"},
+            {"label": "[ PRACTICAL ]", "ratio": "1 / 1"},
+        ],
     },
     {
         "id": "day-03",
         "slug": "day-03-the-footage-that-wasnt-there",
         "day": "Day 03",
         "date": "2026-11-05",
-        "excerpt": (
-            "Vestibulum id ligula porta felis euismod semper. Aenean lacinia bibendum nulla sed "
-            "consectetur. Etiam porta sem malesuada magna mollis euismod."
-        ),
-        "images": ["[ MONITOR INSERT ]", "[ ON SET ]", "[ WRAP ]"],
+        "layout": "wide",
+        "body": [
+            (
+                "Pellentesque in ipsum id orci porta dapibus. Cras ultricies ligula sed magna dictum "
+                "porta. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia "
+                "curae; donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. "
+                "Proin eget tortor risus. Nulla porttitor accumsan tincidunt. Sed porttitor lectus nibh, "
+                "curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Aenean lacinia "
+                "bibendum nulla sed consectetur."
+            ),
+            (
+                "Quisque velit nisi, pretium ut lacinia in, elementum id enim. Curabitur aliquet quam id "
+                "dui posuere blandit. Donec sollicitudin molestie malesuada. Vivamus magna justo, lacinia "
+                "eget consectetur sed, convallis at tellus. Lorem ipsum dolor sit amet, consectetur "
+                "adipiscing elit. Nulla quis lorem ut libero malesuada feugiat. Praesent sapien massa, "
+                "convallis a pellentesque nec, egestas non nisi, cras mattis consectetur purus sit amet. "
+                "Aenean lacinia bibendum nulla sed consectetur."
+            ),
+        ],
+        "images": [
+            {"label": "[ MONITOR INSERT ]", "ratio": "21 / 9"},
+            {"label": "[ ON SET ]", "ratio": "4 / 5"},
+        ],
     },
 ]
 
