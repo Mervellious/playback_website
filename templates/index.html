@@ -15,7 +15,7 @@
    link from EXTERNAL_LINKS; disabled "FILM COMING SOON" until it is set. #}
 {% macro film_button() -%}
 {% set film_link = link_for("film_vimeo") %}
-{% if film_link %}
+{% if film_link and not film_link.disabled %}
 <a class="cta btn-film" href="{{ film_link.href }}" target="_blank" rel="noopener noreferrer"
    {%- if film_link.placeholder %} data-placeholder="true"{% endif %}>
   <svg class="cta__icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">

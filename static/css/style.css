@@ -1878,7 +1878,8 @@ html.menu-open body {
   padding-top: 0;
 }
 
-.contact-direct__row--follow {
+.contact-direct__row--follow,
+.contact-direct__row:last-child {
   border-bottom: 0;
 }
 

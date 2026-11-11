@@ -119,10 +119,12 @@
           <p class="section-label">PRESS</p>
           <a class="contact-direct__email" href="mailto:{{ film.press_email }}">{{ film.press_email }}</a>
         </div>
+        {% if visible_socials() %}
         <div class="contact-direct__row contact-direct__row--follow">
           <p class="section-label">FOLLOW</p>
           {% with social_class="contact-social", social_variant="glow" %}{% include "_social.html" %}{% endwith %}
         </div>
+        {% endif %}
       </div>
 
     </div>

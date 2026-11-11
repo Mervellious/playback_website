@@ -1,23 +1,22 @@
-{# Social icon links from EXTERNAL_LINKS (app.py), resolved by link_for():
-   placeholders are hidden in production and point at the platform homepage
-   in development (data-placeholder="true"). Nothing renders if none are shown.
+{# Social icon links from EXTERNAL_LINKS (app.py), via visible_socials():
+   placeholders point at the platform homepage in development; in production
+   they are hidden, or disabled "Coming soon" icons with SHOW_PLACEHOLDER_LINKS=1.
+   Nothing renders if none are shown.
    Usage: {% include "_social.html" %}
    Options (set with {% with %}): social_class = <ul> class,
    social_variant = "glow" for 44×44 blue-glow icon buttons (Contact page). #}
-{% set socials = [
-  ("instagram", "Instagram"),
-  ("tiktok", "TikTok"),
-  ("imdb", "IMDb"),
-] %}
-{% set live = [] %}
-{% for key, name in socials if link_for(key) %}{% set _ = live.append((key, name)) %}{% endfor %}
+{% set live = visible_socials() %}
 {% if live %}
 <ul class="{{ social_class | default('site-footer__social') }}">
-  {% for key, name in live %}
-  {% set link = link_for(key) %}
+  {% for key, name, link in live %}
   <li>
+    {% if link.disabled %}
+    <a class="icon-link{% if social_variant == 'glow' %} icon-link--glow{% endif %}" href="#" aria-disabled="true" title="Coming soon"
+       aria-label="Playback on {{ name }} (coming soon)" data-placeholder="true">
+    {% else %}
     <a class="icon-link{% if social_variant == 'glow' %} icon-link--glow{% endif %}" href="{{ link.href }}" target="_blank" rel="noopener noreferrer"
        aria-label="Playback on {{ name }} (opens in a new tab)"{% if link.placeholder %} data-placeholder="true"{% endif %}>
+    {% endif %}
       {% if key == "instagram" %}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false">
         <rect x="3" y="3" width="18" height="18" rx="5"/>

@@ -38,10 +38,24 @@ EXTERNAL_LINKS = {
 
 SOCIAL_KEYS = ("instagram", "tiktok", "imdb")
 
-# While developing, show placeholder links anyway (pointing at the platform's
-# homepage). None = follow app.debug (True with `python app.py` / `flask run
-# --debug`, False in production). Set True/False to force it.
-SHOW_PLACEHOLDER_LINKS = None
+SOCIAL_NAMES = {"instagram": "Instagram", "tiktok": "TikTok", "imdb": "IMDb"}
+
+
+def env_flag(name):
+    """"1"/"true" → True, "0"/"false" → False, missing or anything else → None."""
+    value = os.environ.get(name, "").strip().lower()
+    if value in ("1", "true"):
+        return True
+    if value in ("0", "false"):
+        return False
+    return None
+
+
+# Show placeholder links anyway? Set with the SHOW_PLACEHOLDER_LINKS environment
+# variable. Not set = follow app.debug (on with `python app.py` / `flask run
+# --debug`, off under gunicorn). In development they point at the platform's
+# homepage; in production they show as disabled "Coming soon" icons (href="#").
+SHOW_PLACEHOLDER_LINKS = env_flag("SHOW_PLACEHOLDER_LINKS")
 
 PLATFORM_HOMEPAGES = {
     "film_vimeo": "https://vimeo.com",
@@ -62,17 +76,26 @@ def show_placeholder_links():
 
 
 def link_for(key):
-    """How templates render an external link: {"href", "placeholder"} or None (hide it).
+    """How templates render an external link: {"href", "placeholder", "disabled"},
+    or None (hide it).
 
-    Real link → use it. Placeholder → platform homepage in development, hidden in
-    production. (JSON-LD never uses this; it only takes real links.)
+    Real link → use it. Placeholder → platform homepage in development; in
+    production hidden, or (SHOW_PLACEHOLDER_LINKS=1) a disabled "#" link.
+    (JSON-LD never uses this; it only takes real links.)
     """
     url = EXTERNAL_LINKS.get(key, "")
     if is_live_link(url):
-        return {"href": url, "placeholder": False}
+        return {"href": url, "placeholder": False, "disabled": False}
     if show_placeholder_links():
-        return {"href": PLATFORM_HOMEPAGES[key], "placeholder": True}
+        if app.debug:
+            return {"href": PLATFORM_HOMEPAGES[key], "placeholder": True, "disabled": False}
+        return {"href": "#", "placeholder": True, "disabled": True}
     return None
+
+
+def visible_socials():
+    """[(key, name, link)] for the social icons that render; empty = no icon row."""
+    return [(key, SOCIAL_NAMES[key], link) for key in SOCIAL_KEYS if (link := link_for(key))]
 
 
 def placeholder_link_keys():
@@ -301,8 +324,9 @@ def site_context():
         "director_name": DIRECTOR_NAME,
         "film": FILM,  # every template (incl. base.html meta) reads film facts from here
         "link_for": link_for,
+        "visible_socials": visible_socials,
         # Listed on <body> in development so main.js can log one warning.
-        "placeholder_links": placeholder_link_keys() if show_placeholder_links() else [],
+        "placeholder_links": placeholder_link_keys() if show_placeholder_links() and app.debug else [],
     }
 
 

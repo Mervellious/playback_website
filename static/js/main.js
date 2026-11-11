@@ -379,6 +379,12 @@ document.documentElement.classList.add("js");
     preload(1);
   }
 
+  // Placeholder links shown in production (href="#", aria-disabled): no jump to the top.
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest('a[aria-disabled="true"]');
+    if (link) event.preventDefault();
+  });
+
   // Development only: the server lists unset links on <body> (SHOW_PLACEHOLDER_LINKS).
   function warnPlaceholderLinks() {
     const keys = document.body.dataset.placeholderLinks;
