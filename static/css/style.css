@@ -1254,7 +1254,7 @@ html.menu-open body {
     grid-row: 2;
   }
 
-  /* Day 03 — full-width frame, then one text block in columns 1–8 */
+  /* Day 03 — optional full-width frame, then one full-width text block */
   .journal-day--wide {
     row-gap: 40px;
   }
@@ -1264,8 +1264,13 @@ html.menu-open body {
     aspect-ratio: var(--ratio);
   }
 
+  /* Day 03: the text spans the full content width (all 12 columns) */
   .journal-day--wide .journal-day__copy {
-    grid-column: 1 / 9;
+    grid-column: 1 / -1;
+  }
+
+  .journal-day--wide .journal-day__copy p {
+    max-width: none;
   }
 }
 
