@@ -85,18 +85,27 @@
           </button>
         </div>
 
-        <ul class="gallery__thumbs">
-          {% for still in film.stills %}
-          {% set still_url = url_for('static', filename=still.src) %}
-          <li>
-            <button class="gallery__thumb" type="button" data-gallery-thumb
-                    data-src="{{ still_url }}" data-alt="{{ still.alt }}"
-                    aria-label="Show still {{ '%02d' | format(loop.index) }}"{% if loop.first %} aria-current="true"{% endif %}>
-              <img src="{{ still_url }}" alt="{{ still.alt }}" loading="lazy" width="1166" height="1206">
-            </button>
-          </li>
-          {% endfor %}
-        </ul>
+        <!-- Thumbnail carousel: one row, scrolls sideways -->
+        <div class="gallery__strip">
+          <button class="gallery__strip-nav glow-btn" type="button" data-strip-prev aria-label="Scroll stills left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <ul class="gallery__thumbs" data-gallery-strip>
+            {% for still in film.stills %}
+            {% set still_url = url_for('static', filename=still.src) %}
+            <li>
+              <button class="gallery__thumb" type="button" data-gallery-thumb
+                      data-src="{{ still_url }}" data-alt="{{ still.alt }}"
+                      aria-label="Show still {{ '%02d' | format(loop.index) }}"{% if loop.first %} aria-current="true"{% endif %}>
+                <img src="{{ still_url }}" alt="{{ still.alt }}" loading="lazy" width="1166" height="1206">
+              </button>
+            </li>
+            {% endfor %}
+          </ul>
+          <button class="gallery__strip-nav glow-btn" type="button" data-strip-next aria-label="Scroll stills right">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
       </div>
     </div>
   </section>

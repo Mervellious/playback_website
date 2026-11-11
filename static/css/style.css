@@ -174,6 +174,12 @@ button {
 }
 
 .menu-btn {
+  /* No browser button chrome (grey box) now that the glow-btn frame is gone */
+  appearance: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
   position: absolute;
   left: calc(var(--menu-left) * var(--u));
   top: calc(var(--topbar-h) * var(--u) / 2 - var(--menu-size) / 2);
@@ -1176,6 +1182,16 @@ html.menu-open body {
   border-top: var(--line);
 }
 
+/* No page header any more: KEY FACTS starts ~48px under the nav divider,
+   without its own line (the lines between sections stay). */
+.page.epk {
+  padding-top: 0;
+}
+
+.epk > .epk-section:first-of-type {
+  border-top: 0;
+}
+
 .epk-section__body {
   min-width: 0;
 }
@@ -1289,12 +1305,59 @@ html.menu-open body {
 .gallery__nav--prev { left: 16px; }
 .gallery__nav--next { right: 16px; }
 
-.gallery__thumbs {
+/* Thumbnail carousel: arrow · one scrolling row · arrow */
+.gallery__strip {
+  --thumbs-visible: 4;
   margin-top: 16px;
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  display: flex;
+  align-items: center;
   gap: 12px;
+}
+
+.gallery__thumbs {
+  position: relative; /* offsetParent for the JS that keeps the active thumb in view */
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  gap: 12px;
+  padding: 12px 4px; /* room for the active thumb's glow */
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 4px;
+  scrollbar-width: none; /* hidden, still scrollable by touch / trackpad */
   list-style: none;
+}
+
+.gallery__thumbs::-webkit-scrollbar {
+  display: none;
+}
+
+.gallery__thumbs > li {
+  flex: 0 0 calc((100% - (var(--thumbs-visible) - 1) * 12px) / var(--thumbs-visible));
+  scroll-snap-align: start;
+}
+
+.gallery__strip-nav {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  color: var(--white);
+  cursor: pointer;
+  transition: opacity 200ms ease;
+}
+
+.gallery__strip-nav svg {
+  width: 20px;
+  height: 20px;
+}
+
+.gallery__strip-nav[aria-disabled="true"] {
+  opacity: .35;
+  cursor: default;
 }
 
 .gallery__thumb {
@@ -1855,8 +1918,12 @@ html.menu-open body {
     grid-template-columns: 1fr;
   }
 
-  .gallery__thumbs {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .gallery__strip {
+    --thumbs-visible: 3;
+  }
+
+  .epk > .epk-section:first-of-type {
+    padding-top: 32px;
   }
 
   .posters {

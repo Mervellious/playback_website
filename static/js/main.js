@@ -326,6 +326,46 @@ document.documentElement.classList.add("js");
 
     let current = 0;
 
+    // ---------- Thumbnail carousel ----------
+    const strip = gallery.querySelector("[data-gallery-strip]");
+    const stripPrev = gallery.querySelector("[data-strip-prev]");
+    const stripNext = gallery.querySelector("[data-strip-next]");
+    const scrollBehavior = reduceMotion ? "auto" : "smooth";
+
+    function updateStripArrows() {
+      if (!strip) return;
+      const max = strip.scrollWidth - strip.clientWidth;
+      stripPrev?.setAttribute("aria-disabled", String(strip.scrollLeft <= 1));
+      stripNext?.setAttribute("aria-disabled", String(strip.scrollLeft >= max - 1));
+    }
+
+    function scrollStrip(direction) {
+      strip.scrollBy({ left: direction * strip.clientWidth, behavior: scrollBehavior });
+    }
+
+    // Keep the active thumb visible by scrolling the strip only, never the page.
+    function revealThumb(thumb) {
+      if (!strip) return;
+      const item = thumb.parentElement;
+      const pad = parseFloat(getComputedStyle(strip).paddingLeft) || 0;
+      const start = item.offsetLeft - pad;
+      const end = item.offsetLeft + item.offsetWidth + pad - strip.clientWidth;
+      if (start < strip.scrollLeft) strip.scrollTo({ left: start, behavior: scrollBehavior });
+      else if (end > strip.scrollLeft) strip.scrollTo({ left: end, behavior: scrollBehavior });
+    }
+
+    if (strip) {
+      stripPrev?.addEventListener("click", () => {
+        if (stripPrev.getAttribute("aria-disabled") !== "true") scrollStrip(-1);
+      });
+      stripNext?.addEventListener("click", () => {
+        if (stripNext.getAttribute("aria-disabled") !== "true") scrollStrip(1);
+      });
+      strip.addEventListener("scroll", updateStripArrows, { passive: true });
+      window.addEventListener("resize", updateStripArrows);
+      updateStripArrows();
+    }
+
     function show(index, { focusThumb = false } = {}) {
       current = (index + thumbs.length) % thumbs.length;
       const thumb = thumbs[current];
@@ -338,7 +378,8 @@ document.documentElement.classList.add("js");
         if (i === current) button.setAttribute("aria-current", "true");
         else button.removeAttribute("aria-current");
       });
-      if (focusThumb) thumb.focus();
+      revealThumb(thumb);
+      if (focusThumb) thumb.focus({ preventScroll: true });
     }
 
     thumbs.forEach((button, i) => button.addEventListener("click", () => show(i)));
