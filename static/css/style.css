@@ -1267,6 +1267,10 @@ html.menu-open body {
 
   .journal-day--right .journal-day__pair {
     grid-column: 6 / 13;
+    grid-row: 1;
+  }
+
+  .journal-day--right .journal-day__frame--wide + .journal-day__pair {
     grid-row: 2;
   }
 
