@@ -64,7 +64,8 @@
     </div>
 
     {% else %}
-    {{ frame(images[0], "hero") }}
+    {# Two or more images: the first is the full-width frame on top; the last is the small one. #}
+    {% if images | length > 1 %}{{ frame(images[0], "hero") }}{% endif %}
     <div class="journal-day__copy reveal">
       {{ day_header(entry) }}
       <p>{{ entry.body[0] }}</p>
@@ -72,7 +73,7 @@
     <div class="journal-day__copy journal-day__copy--aside reveal">
       {% for p in entry.body[1:] %}<p>{{ p }}</p>{% endfor %}
     </div>
-    {% for image in images[1:] %}{{ frame(image, "small") }}{% endfor %}
+    {% for image in images[-1:] %}{{ frame(image, "small") }}{% endfor %}
     {% endif %}
   </section>
   {% endfor %}

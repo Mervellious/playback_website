@@ -1270,7 +1270,7 @@ html.menu-open body {
     grid-row: 2;
   }
 
-  /* Day 03 — full-width 21:9, then text (1–6), paragraph (7–9), small frame (10–12) */
+  /* Day 03 — [optional full-width frame], then text (1–6), paragraph (7–9), small frame (10–12) */
   .journal-day--wide {
     row-gap: 40px;
   }
@@ -1281,21 +1281,27 @@ html.menu-open body {
     aspect-ratio: var(--ratio);
   }
 
+  /* With a full-width frame on top, the text row moves down to row 2 */
+  .journal-day--wide .journal-day__frame--hero ~ .journal-day__copy,
+  .journal-day--wide .journal-day__frame--hero ~ .journal-day__frame--small {
+    grid-row: 2;
+  }
+
   .journal-day--wide .journal-day__copy {
     grid-column: 1 / 7;
-    grid-row: 2;
+    grid-row: 1;
   }
 
   .journal-day--wide .journal-day__copy--aside {
     grid-column: 7 / 10;
-    grid-row: 2;
+    grid-row: 1;
     align-self: start;
     margin-top: 0;
   }
 
   .journal-day--wide .journal-day__frame--small {
     grid-column: 10 / 13;
-    grid-row: 2;
+    grid-row: 1;
     align-self: start;
     width: 100%;
   }
