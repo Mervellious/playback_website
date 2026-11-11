@@ -2,15 +2,27 @@ import hmac
 import os
 import re
 import secrets
+import sys
 from datetime import date, datetime, timezone
 
 from flask import Flask, abort, jsonify, redirect, render_template, request, send_from_directory, session, url_for
 
 app = Flask(__name__)
 
+# Production = served by gunicorn (e.g. on Render: `gunicorn app:app`).
+# Locally, `python app.py` / `flask run --debug` keep debug mode.
+IS_PRODUCTION = "gunicorn" in sys.modules or bool(os.environ.get("RENDER"))
+if IS_PRODUCTION:
+    app.debug = False
+
 # Sessions (CSRF tokens) need a secret key. Set SECRET_KEY in production;
 # the fallback is for local development only.
 app.secret_key = os.environ.get("SECRET_KEY") or "dev-only-change-me"
+if IS_PRODUCTION and not os.environ.get("SECRET_KEY"):
+    app.logger.warning(
+        "SECRET_KEY is not set: using the insecure development key. "
+        "Set the SECRET_KEY environment variable (e.g. in Render > Environment)."
+    )
 
 # ---------------------------------------------------------------------------
 # External links — the one place to change them. A link that is empty or still
