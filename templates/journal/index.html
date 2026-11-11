@@ -58,11 +58,9 @@
       {{ day_header(entry) }}
       {% for p in entry.body %}<p>{{ p }}</p>{% endfor %}
     </div>
-    {# Odd number of images: the first is a wide frame on top, the rest sit in pairs. #}
-    {% set pair_start = 1 if images | length is odd else 0 %}
-    {% if pair_start %}{{ frame(images[0], "wide") }}{% endif %}
+    {{ frame(images[0], "wide") }}
     <div class="journal-day__pair">
-      {% for image in images[pair_start:] %}{{ frame(image, "square") }}{% endfor %}
+      {% for image in images[1:] %}{{ frame(image, "square") }}{% endfor %}
     </div>
 
     {% else %}

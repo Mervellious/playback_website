@@ -228,6 +228,7 @@ JOURNAL_ENTRIES = [
             ),
         ],
         "images": [
+            {"ratio": "16 / 9"},
             {"ratio": "1 / 1"},
             {"ratio": "1 / 1"},
         ],
