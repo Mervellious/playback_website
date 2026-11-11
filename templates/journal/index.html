@@ -64,7 +64,7 @@
     </div>
 
     {% else %}
-    {# Full-width frame on top, then one text block #}
+    {# Optional full-width frame on top (skipped when the day has no images), then one text block #}
     {% for image in images[:1] %}{{ frame(image, "hero") }}{% endfor %}
     <div class="journal-day__copy reveal">
       {{ day_header(entry) }}

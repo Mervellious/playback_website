@@ -257,9 +257,7 @@ JOURNAL_ENTRIES = [
                 "Aenean lacinia bibendum nulla sed consectetur."
             ),
         ],
-        "images": [
-            {"ratio": "21 / 9"},
-        ],
+        "images": [],  # none for now; add {"ratio": "21 / 9"} for a full-width frame on top
     },
 ]
 
