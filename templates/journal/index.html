@@ -64,16 +64,12 @@
     </div>
 
     {% else %}
-    {# Two or more images: the first is the full-width frame on top; the last is the small one. #}
-    {% if images | length > 1 %}{{ frame(images[0], "hero") }}{% endif %}
+    {# Full-width frame on top, then one text block #}
+    {% for image in images[:1] %}{{ frame(image, "hero") }}{% endfor %}
     <div class="journal-day__copy reveal">
       {{ day_header(entry) }}
-      <p>{{ entry.body[0] }}</p>
+      {% for p in entry.body %}<p>{{ p }}</p>{% endfor %}
     </div>
-    <div class="journal-day__copy journal-day__copy--aside reveal">
-      {% for p in entry.body[1:] %}<p>{{ p }}</p>{% endfor %}
-    </div>
-    {% for image in images[-1:] %}{{ frame(image, "small") }}{% endfor %}
     {% endif %}
   </section>
   {% endfor %}
