@@ -24,4 +24,4 @@ Create a **Web Service** from this GitHub repo with:
 Notes:
 - Under gunicorn the app runs with debug off, and placeholder links (`[...]` values in `EXTERNAL_LINKS`) are hidden.
 - If `SECRET_KEY` is missing, the app logs a warning and falls back to an insecure development key; set it before going live.
-- `static/video/*.mp4` is git-ignored, so the hero shows only its poster until a trimmed `hero.mp4` (< 10 MB) is added with `git add -f static/video/hero.mp4`.
+- `static/video/*.mp4` is git-ignored; only the trimmed 6 s `hero.mp4` is committed (added with `git add -f`). Re-add it the same way after replacing it.
